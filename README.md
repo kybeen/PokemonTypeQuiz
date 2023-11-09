@@ -3,7 +3,7 @@
 
 
 ### 💡 활용 API
-- https://pokeapi.co
+- 포켓몬 API 👉 https://pokeapi.co
 - Docs 👉 https://pokeapi.co/docs/v2#items-section
 
 ### 📑 언어별 이름 파일

@@ -9,6 +9,8 @@
 ### 📑 언어별 이름 파일
 - https://github.com/PokeAPI/pokeapi/blob/master/data/v2/csv/pokemon_species_names.csv
 - CSV 파일 다운 후 앱에서 파싱해서 번역
+  <img width="460" alt="image" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/3a24ac3e-68a2-46c3-afa9-4bfb98c60598">
+
 
 ### ⚙️ 동작 방식
 1. 랜덤으로 관동지방(도감번호 1~151)의 포켓몬 중 한마리의 이름과 이미지를 불러온다.

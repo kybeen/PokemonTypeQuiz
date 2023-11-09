@@ -7,11 +7,20 @@
 
 import UIKit
 
+import SnapKit
+
 class MainViewController: UIViewController {
+
+    private let mainView = MainView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        view.addSubview(mainView)
+        mainView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         let id = 4
         let url = "https://pokeapi.co/api/v2/pokemon/\(id)"
         let apiURI: URL! = URL(string: url)
@@ -56,23 +65,5 @@ class MainViewController: UIViewController {
         } catch {
             print("오류")
         }
-    }
-}
-
-// MARK: - Preview canvas 세팅
-import SwiftUI
-
-struct MainViewControllerRepresentable: UIViewControllerRepresentable {
-    typealias UIViewControllerType = MainViewController
-    func makeUIViewController(context: Context) -> MainViewController {
-        return MainViewController()
-    }
-    func updateUIViewController(_ uiViewController: MainViewController, context: Context) {
-    }
-}
-@available(iOS 13.0.0, *)
-struct MainViewPreview: PreviewProvider {
-    static var previews: some View {
-        MainViewControllerRepresentable()
     }
 }

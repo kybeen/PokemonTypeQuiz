@@ -99,12 +99,65 @@ class MainViewController: UIViewController {
     }
     
     @objc private func submitAnswer() {
-//        if type1Answer == userType1Answer && type2Answer == userType2Answer {
-//            print("정답")
-//        } else {
-//            print("틀림")
-//        }
+        if userTypeAnswer.count == 0 {
+            noValueAlert()
+        } else {
+            let answerArr = convertIndexToTypeString(userTypeAnswer: userTypeAnswer)
+            if let type2Answer = type2Answer { // 포켓몬의 타입이 2개일 때
+                // 둘 다 정답 배열에 있으면 정답
+                if answerArr.contains(type1Answer!) && answerArr.contains(type2Answer) {
+                    correctAlert(type1: type1Answer!, type2: type2Answer)
+                    userTypeAnswer = []
+                    reloadValues(collectionView: mainView.typeCollectionView)
+                    loadRandomPokemon(id: randomIDGenerator())
+                } else {
+                    failAlert()
+                }
+            } else { // 포켓몬의 타입이 1개일 때
+                if answerArr.contains(type1Answer!) {
+                    correctAlert(type1: type1Answer!, type2: type2Answer)
+                    userTypeAnswer = []
+                    reloadValues(collectionView: mainView.typeCollectionView)
+                    loadRandomPokemon(id: randomIDGenerator())
+                } else {
+                    failAlert()
+                }
+            }
+        }
         print(userTypeAnswer)
+    }
+    
+    func convertIndexToTypeString(userTypeAnswer: [Int]) -> [String] {
+        var typeStringArr = [String]()
+        for idx in userTypeAnswer {
+            let value = englishType[idx]
+            typeStringArr.append(value)
+        }
+        return typeStringArr
+    }
+    private func noValueAlert() {
+        let alert = UIAlertController(title: "선택한 값 없음", message: "1개 혹은 2개의 타입을 선택해주세요", preferredStyle: .alert)
+        let ok = UIAlertAction(title: "확인", style: .cancel)
+        alert.addAction(ok)
+        present(alert, animated: true)
+    }
+    private func correctAlert(type1: String, type2: String?) {
+        var alert: UIAlertController
+        if let type2 = type2 {
+            alert = UIAlertController(title: "정답입니다!!!", message: "타입: \(type1), \(type2)", preferredStyle: .alert)
+        } else {
+            alert = UIAlertController(title: "정답입니다!!!", message: "타입: \(type1)", preferredStyle: .alert)
+        }
+//        let alert = UIAlertController(title: "정답입니다!!!", message: "타입: \(type1), \(type2)", preferredStyle: .alert)
+        let ok = UIAlertAction(title: "확인", style: .cancel)
+        alert.addAction(ok)
+        present(alert, animated: true)
+    }
+    private func failAlert() {
+        let alert = UIAlertController(title: "틀렸습니다...", message: "", preferredStyle: .alert)
+        let ok = UIAlertAction(title: "확인", style: .cancel)
+        alert.addAction(ok)
+        present(alert, animated: true)
     }
 }
 

@@ -9,31 +9,29 @@ import UIKit
 
 final class MainView: UIView {
 
-    private let pokemonID: UILabel = {
+    let pokemonID: UILabel = {
         let pokemonID = UILabel()
         pokemonID.text = "도감번호: ??"
         pokemonID.textAlignment = .center
+        pokemonID.textColor = .black
         return pokemonID
     }()
-    private let pokemonName: UILabel = {
+    let pokemonName: UILabel = {
         let pokemonName = UILabel()
         pokemonName.text = "불러오는중..."
         pokemonName.textAlignment = .center
         pokemonName.font = UIFont.boldSystemFont(ofSize: 30)
         return pokemonName
     }()
-    private let pokemonImageView: UIImageView = {
+    let pokemonImageView: UIImageView = {
         let pokemonImageView = UIImageView()
-        let imageURL: URL! = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png")
-        let imageData = try! Data(contentsOf: imageURL)
-        pokemonImageView.image = UIImage(data: imageData)
         pokemonImageView.contentMode = .scaleAspectFill
-        pokemonImageView.backgroundColor = .gray
         return pokemonImageView
     }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.backgroundColor = .white
         setupUI()
     }
 
@@ -44,7 +42,7 @@ final class MainView: UIView {
     private func setupUI() {
         addSubview(pokemonID)
         pokemonID.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(30)
+            make.top.equalTo(safeAreaLayoutGuide).inset(30)
             make.centerX.equalToSuperview()
         }
         

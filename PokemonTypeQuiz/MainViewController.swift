@@ -12,6 +12,7 @@ import SnapKit
 class MainViewController: UIViewController {
 
     private let mainView = MainView()
+//    var randomPokemon: Pokemon? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +22,10 @@ class MainViewController: UIViewController {
             make.edges.equalToSuperview()
         }
         
-        let id = 4
+        loadRandomPokemon(id: randomIDGenerator())
+    }
+
+    private func loadRandomPokemon(id: Int) {
         let url = "https://pokeapi.co/api/v2/pokemon/\(id)"
         let apiURI: URL! = URL(string: url)
         
@@ -31,17 +35,17 @@ class MainViewController: UIViewController {
             let apiDictionary = try JSONSerialization.jsonObject(with: apiData, options: []) as! NSDictionary
             
             // 도감번호
-            let id = apiDictionary["id"]
-            print("id: \(id)")
+            let idValue = apiDictionary["id"] as! Int
+            print("idValue: \(idValue)")
 
             // 영문이름
-            let name = apiDictionary["name"]
-            print("name: \(name)")
+            let nameValue = apiDictionary["name"] as! String
+            print("nameValue: \(nameValue)")
 
             // 이미지 URL
             let sprites = apiDictionary["sprites"] as! NSDictionary
-            let imageURL = sprites["front_default"] as! String
-            print("imageURL: \(imageURL)")
+            let imageURLValue = sprites["front_default"] as! String
+            print("imageURLValue: \(imageURLValue)")
 
             // 타입1
             let typesArr = apiDictionary["types"] as! NSArray
@@ -62,8 +66,20 @@ class MainViewController: UIViewController {
                 type2Value = type2
             }
             print("type2Value: \(type2Value)")
+
+            mainView.pokemonID.text = "도감번호: \(idValue)"
+            mainView.pokemonName.text = nameValue
+            
+            let imageURL: URL! = URL(string: imageURLValue)
+            let imageData = try! Data(contentsOf: imageURL)
+            mainView.pokemonImageView.image = UIImage(data: imageData)
         } catch {
             print("오류")
         }
+    }
+
+    private func randomIDGenerator() -> Int {
+        let randomNumber = Int(arc4random_uniform(151)) + 1
+        return randomNumber
     }
 }

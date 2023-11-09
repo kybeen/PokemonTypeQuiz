@@ -21,6 +21,12 @@ class MainViewController: UIViewController {
         mainView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        mainView.typeCollectionView.register(
+            TypeCollectionViewCell.self,
+            forCellWithReuseIdentifier: TypeCollectionViewCell.cellIdentifier
+        )
+        mainView.typeCollectionView.delegate = self
+        mainView.typeCollectionView.dataSource = self
         
         loadRandomPokemon(id: randomIDGenerator())
     }
@@ -81,5 +87,30 @@ class MainViewController: UIViewController {
     private func randomIDGenerator() -> Int {
         let randomNumber = Int(arc4random_uniform(151)) + 1
         return randomNumber
+    }
+}
+
+extension MainViewController: UICollectionViewDataSource {
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return englishType.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TypeCollectionViewCell.cellIdentifier, for: indexPath) as? TypeCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        cell.typeImageView.image = UIImage(named: englishType[indexPath.row])
+        cell.typeNameLabel.text = koreanType[indexPath.row]
+        return cell
+    }
+}
+
+extension MainViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        6
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 60, height: 80)
     }
 }

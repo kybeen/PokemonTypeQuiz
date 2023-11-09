@@ -11,10 +11,28 @@ final class TypeCollectionViewCell: UICollectionViewCell {
 
     static let cellIdentifier = "typeCollectionViewCell"
     
+    let typeStackView: UIStackView = {
+        let typeStackView = UIStackView()
+        typeStackView.axis = .vertical
+        typeStackView.distribution = .fillEqually
+        return typeStackView
+    }()
+    let typeImageView: UIImageView = {
+        let typeImageView = UIImageView()
+        typeImageView.contentMode = .scaleAspectFit
+        return typeImageView
+    }()
+    let typeNameLabel: UILabel = {
+        let typeNameLabel = UILabel()
+        typeNameLabel.textAlignment = .center
+        return typeNameLabel
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .gray
-        self.layer.cornerRadius = 15
+//        self.backgroundColor = .gray
+        self.layer.borderWidth = 1
+        self.layer.cornerRadius = 10
         setupUI()
 
     }
@@ -23,6 +41,14 @@ final class TypeCollectionViewCell: UICollectionViewCell {
     }
 
     func setupUI() {
-
+        addSubview(typeStackView)
+        typeStackView.addArrangedSubview(typeImageView)
+        typeStackView.addArrangedSubview(typeNameLabel)
+        
+        typeStackView.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(10)
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
     }
 }

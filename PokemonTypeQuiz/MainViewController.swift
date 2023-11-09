@@ -12,15 +12,14 @@ import SnapKit
 class MainViewController: UIViewController {
 
     private let mainView = MainView()
-//    var randomPokemon: Pokemon? = nil
-    var type1Answer: String?
-    var type2Answer: String?
+    var pokemonNameDictionary = [String:String]()
+    var type1Answer: String? // 포켓몬의 타입1
+    var type2Answer: String? // 포켓몬의 타입2
     
-    var userTypeAnswer = [Int]()
+    var userTypeAnswer = [Int]() // 유저가 선택한 타입(인덱스) 배열
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         view.addSubview(mainView)
         mainView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -33,71 +32,129 @@ class MainViewController: UIViewController {
         mainView.typeCollectionView.dataSource = self
         
         mainView.submitButton.addTarget(self, action: #selector(submitAnswer), for: .touchUpInside)
-        
+
+        loadPokemonNameCSV()
         loadRandomPokemon(id: randomIDGenerator())
     }
 
+    // 랜덤 포켓몬 불러오기
     private func loadRandomPokemon(id: Int) {
         let url = "https://pokeapi.co/api/v2/pokemon/\(id)"
         let apiURI: URL! = URL(string: url)
         
-        let apiData = try! Data(contentsOf: apiURI)
-        
-        do {
-            let apiDictionary = try JSONSerialization.jsonObject(with: apiData, options: []) as! NSDictionary
-            
-            // 도감번호
-            let idValue = apiDictionary["id"] as! Int
-            print("idValue: \(idValue)")
+        let apiTask = URLSession.shared.dataTask(with: apiURI) { (data, response, error) in
+            if let error = error {
+                print("error: \(error)")
+            } else if let data = data {
+                DispatchQueue.main.async {
+                    do {
+                        let apiDictionary = try JSONSerialization.jsonObject(with: data, options: []) as! NSDictionary
+                        
+                        // 도감번호
+                        let idValue = apiDictionary["id"] as! Int
+                        // 영문이름
+                        let nameValue = apiDictionary["name"] as! String
+                        // 이미지 URL
+                        let sprites = apiDictionary["sprites"] as! NSDictionary
+                        let imageURLValue = sprites["front_default"] as! String
+                        // 타입1
+                        let typesArr = apiDictionary["types"] as! NSArray
+                        let type1Value: String = {
+                            let dict = typesArr[0] as! NSDictionary
+                            let dict2 = dict["type"] as! NSDictionary
+                            let type1 = dict2["name"] as! String
+                            return type1
+                        }()
+                        // 타입2
+                        var type2Value: String?
+                        if typesArr.count > 1 {
+                            let dict = typesArr[1] as! NSDictionary
+                            let dict2 = dict["type"] as! NSDictionary
+                            let type2 = dict2["name"] as! String
+                            type2Value = type2
+                        }
 
-            // 영문이름
-            let nameValue = apiDictionary["name"] as! String
-            print("nameValue: \(nameValue)")
-
-            // 이미지 URL
-            let sprites = apiDictionary["sprites"] as! NSDictionary
-            let imageURLValue = sprites["front_default"] as! String
-            print("imageURLValue: \(imageURLValue)")
-
-            // 타입1
-            let typesArr = apiDictionary["types"] as! NSArray
-            let type1Value: String = {
-                let dict = typesArr[0] as! NSDictionary
-                let dict2 = dict["type"] as! NSDictionary
-                let type1 = dict2["name"] as! String
-                return type1
-            }()
-            print("type1Value: \(type1Value)")
-            
-            // 타입2
-            var type2Value: String?
-            if typesArr.count > 1 {
-                let dict = typesArr[1] as! NSDictionary
-                let dict2 = dict["type"] as! NSDictionary
-                let type2 = dict2["name"] as! String
-                type2Value = type2
+                        self.mainView.pokemonID.text = "도감번호: \(idValue)"
+                        self.mainView.pokemonName.text = self.pokemonNameDictionary[nameValue.capitalized]
+                        if let value = enToKoNameDict[nameValue] {
+                            self.mainView.pokemonName.text = value
+                        }
+                        self.type1Answer = type1Value
+                        self.type2Answer = type2Value
+                        
+                        let imageURL: URL! = URL(string: imageURLValue)
+                        let task = URLSession.shared.dataTask(with: imageURL) { (data, response, error) in
+                            if let error = error {
+                                print("error: \(error)")
+                            } else if let data = data {
+                                DispatchQueue.main.async {
+                                    self.mainView.pokemonImageView.image = UIImage(data: data)
+                                }
+                            }
+                        }
+                        task.resume()
+                    } catch {
+                        print("오류")
+                    }
+                }
             }
-            print("type2Value: \(type2Value)")
-
-            mainView.pokemonID.text = "도감번호: \(idValue)"
-            mainView.pokemonName.text = nameValue
-            
-            let imageURL: URL! = URL(string: imageURLValue)
-            let imageData = try! Data(contentsOf: imageURL)
-            mainView.pokemonImageView.image = UIImage(data: imageData)
-            
-            type1Answer = type1Value
-            type2Answer = type2Value
-        } catch {
-            print("오류")
         }
+        apiTask.resume()
     }
-
+    // 도감 번호 랜덤 추출
     private func randomIDGenerator() -> Int {
         let randomNumber = Int(arc4random_uniform(151)) + 1
         return randomNumber
     }
+}
+
+// MARK: - CSV 데이터 처리 관련 메서드
+extension MainViewController {
+
+    // MARK: - 포켓몬 이름 데이터 불러오기
+    private func loadPokemonNameCSV() {
+        print("loadPokemonNameCSV()...")
+        let path = Bundle.main.path(forResource: "pokemonNames", ofType: "csv")!
+        print(path)
+
+        parseCSV(url: URL(fileURLWithPath: path))
+    }
     
+    // MARK: - CSV 파일을 파싱하는 메서드
+    private func parseCSV(url: URL) {
+        print("parseCSV()...")
+        do {
+            let data = try Data(contentsOf: url)
+            if let dataEncoded = String(data: data, encoding: .utf8) {
+                var lines = dataEncoded.components(separatedBy: "\n")
+                lines.removeFirst()
+                
+                var koName = ""
+                var enName = ""
+                for line in lines {
+                    let columns = line.components(separatedBy: ",")
+                    guard columns.count == 4 else {
+                        break
+                    }
+                    if columns[1] == "3" {
+                        koName = columns[2]
+                    } else if columns[1] == "9" {
+                        enName = columns[2]
+                        pokemonNameDictionary[enName] = koName
+                    }
+                }
+                print(pokemonNameDictionary)
+            }
+        } catch {
+            print("CSV 파일을 읽는 도중 에러가 발생했습니다!!")
+        }
+    }
+}
+
+// MARK: - 정답 제출 로직 관련 메서드
+extension MainViewController {
+
+    // 정답 제출 버튼 클릭 시 호출
     @objc private func submitAnswer() {
         if userTypeAnswer.count == 0 {
             noValueAlert()
@@ -114,19 +171,24 @@ class MainViewController: UIViewController {
                     failAlert()
                 }
             } else { // 포켓몬의 타입이 1개일 때
-                if answerArr.contains(type1Answer!) {
-                    correctAlert(type1: type1Answer!, type2: type2Answer)
-                    userTypeAnswer = []
-                    reloadValues(collectionView: mainView.typeCollectionView)
-                    loadRandomPokemon(id: randomIDGenerator())
-                } else {
+                if answerArr.count == 2 { // 타입을 2개 골랐으면 틀림
                     failAlert()
+                } else {
+                    if answerArr.contains(type1Answer!) {
+                        correctAlert(type1: type1Answer!, type2: type2Answer)
+                        userTypeAnswer = []
+                        reloadValues(collectionView: mainView.typeCollectionView)
+                        loadRandomPokemon(id: randomIDGenerator())
+                    } else {
+                        failAlert()
+                    }
                 }
             }
         }
         print(userTypeAnswer)
     }
-    
+
+    // 타입 인덱스가 들어 있는 정답 배열을 타입 String 값이 들어 있는 배열로 바꿔서 반환
     func convertIndexToTypeString(userTypeAnswer: [Int]) -> [String] {
         var typeStringArr = [String]()
         for idx in userTypeAnswer {
@@ -135,24 +197,29 @@ class MainViewController: UIViewController {
         }
         return typeStringArr
     }
+
+    // 선택한 타입이 없을 때
     private func noValueAlert() {
-        let alert = UIAlertController(title: "선택한 값 없음", message: "1개 혹은 2개의 타입을 선택해주세요", preferredStyle: .alert)
+        let alert = UIAlertController(title: "타입 선택하지 않음", message: "1개 혹은 2개의 타입을 선택해주세요", preferredStyle: .alert)
         let ok = UIAlertAction(title: "확인", style: .cancel)
         alert.addAction(ok)
         present(alert, animated: true)
     }
+
+    // 정답일 때
     private func correctAlert(type1: String, type2: String?) {
         var alert: UIAlertController
-        if let type2 = type2 {
-            alert = UIAlertController(title: "정답입니다!!!", message: "타입: \(type1), \(type2)", preferredStyle: .alert)
-        } else {
-            alert = UIAlertController(title: "정답입니다!!!", message: "타입: \(type1)", preferredStyle: .alert)
+        if let type2 = type2 { // 타입이 2개일 때
+            alert = UIAlertController(title: "정답입니다!!!", message: "타입: \(enToKoTypeDict[type1]!), \(enToKoTypeDict[type2]!)", preferredStyle: .alert)
+        } else { // 타입이 1개일 때
+            alert = UIAlertController(title: "정답입니다!!!", message: "타입: \(enToKoTypeDict[type1]!)", preferredStyle: .alert)
         }
-//        let alert = UIAlertController(title: "정답입니다!!!", message: "타입: \(type1), \(type2)", preferredStyle: .alert)
         let ok = UIAlertAction(title: "확인", style: .cancel)
         alert.addAction(ok)
         present(alert, animated: true)
     }
+
+    // 틀렸을 때
     private func failAlert() {
         let alert = UIAlertController(title: "틀렸습니다...", message: "", preferredStyle: .alert)
         let ok = UIAlertAction(title: "확인", style: .cancel)
@@ -161,6 +228,7 @@ class MainViewController: UIViewController {
     }
 }
 
+// MARK: - UICollectionViewDataSource 델리게이트 구현
 extension MainViewController: UICollectionViewDataSource {
 
     // 컬렉션 뷰 아이템 개수 설정
@@ -213,6 +281,7 @@ extension MainViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: - UICollectionViewDelegateFlowLayout 델리게이트 구현
 extension MainViewController: UICollectionViewDelegateFlowLayout {
     // 기준 행 또는 열 사이에 들어가는 아이템 사이의 간격
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {

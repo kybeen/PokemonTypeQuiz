@@ -10,6 +10,7 @@ import Foundation
 struct Pokemon {
     var id: Int // 도감번호
     var name: String // 이름
+    var imageURL: String // 이미지
     var type1: PokemonType // 타입1
     var type2: PokemonType? // 타입2
 }

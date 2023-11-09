@@ -13,6 +13,10 @@ class MainViewController: UIViewController {
 
     private let mainView = MainView()
 //    var randomPokemon: Pokemon? = nil
+    var type1Answer: String?
+    var type2Answer: String?
+    
+    var userTypeAnswer = [Int]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +31,8 @@ class MainViewController: UIViewController {
         )
         mainView.typeCollectionView.delegate = self
         mainView.typeCollectionView.dataSource = self
+        
+        mainView.submitButton.addTarget(self, action: #selector(submitAnswer), for: .touchUpInside)
         
         loadRandomPokemon(id: randomIDGenerator())
     }
@@ -79,6 +85,9 @@ class MainViewController: UIViewController {
             let imageURL: URL! = URL(string: imageURLValue)
             let imageData = try! Data(contentsOf: imageURL)
             mainView.pokemonImageView.image = UIImage(data: imageData)
+            
+            type1Answer = type1Value
+            type2Answer = type2Value
         } catch {
             print("오류")
         }
@@ -88,14 +97,25 @@ class MainViewController: UIViewController {
         let randomNumber = Int(arc4random_uniform(151)) + 1
         return randomNumber
     }
+    
+    @objc private func submitAnswer() {
+//        if type1Answer == userType1Answer && type2Answer == userType2Answer {
+//            print("정답")
+//        } else {
+//            print("틀림")
+//        }
+        print(userTypeAnswer)
+    }
 }
 
 extension MainViewController: UICollectionViewDataSource {
 
+    // 컬렉션 뷰 아이템 개수 설정
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return englishType.count
     }
     
+    // 컬렉션 뷰 구성
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TypeCollectionViewCell.cellIdentifier, for: indexPath) as? TypeCollectionViewCell else {
             return UICollectionViewCell()
@@ -104,13 +124,67 @@ extension MainViewController: UICollectionViewDataSource {
         cell.typeNameLabel.text = koreanType[indexPath.row]
         return cell
     }
+    
+    // 셀 선택 시 동작
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("누른 자리: \(indexPath.row)")
+        // 선택되어있는 값이면 userTypeAnswer에서 제거
+        if let index = userTypeAnswer.firstIndex(of: indexPath.row) {
+            userTypeAnswer.remove(at: index)
+            print("선택 해제됨!! \(userTypeAnswer)")
+        } else {
+            // 선택되어 있지 않은 값이고, userTypeAnswer의 값이 2개 미만일 때 userTypeAnswer에 추가
+            if userTypeAnswer.count < 2 {
+                userTypeAnswer.append(indexPath.row)
+                print("선택됨!! \(userTypeAnswer)")
+            }
+        }
+        reloadValues(collectionView: collectionView)
+    }
+    
+    // 셀 선택 처리 메서드
+    func reloadValues(collectionView: UICollectionView) {
+        // 0~17까지 인덱스 중 userTypeAnswer에 있는 값이면 셀에 선택 효과 적용
+        for idx in 0..<18 {
+            guard let cell = collectionView.cellForItem(at: IndexPath(row: idx, section: 0)) as? TypeCollectionViewCell else {
+                return
+            }
+            if userTypeAnswer.contains(idx) {
+//                cell.layer.borderWidth = 5
+                cell.backgroundColor = .gray.withAlphaComponent(0.5)
+            } else {
+//                cell.layer.borderWidth = 1
+                cell.backgroundColor = .clear
+            }
+        }
+    }
 }
 
 extension MainViewController: UICollectionViewDelegateFlowLayout {
+    // 기준 행 또는 열 사이에 들어가는 아이템 사이의 간격
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         6
     }
+    // 컬렉션 뷰의 사이즈
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 60, height: 80)
+    }
+}
+
+// MARK: - Preview canvas 세팅
+import SwiftUI
+
+struct MainViewControllerRepresentable: UIViewControllerRepresentable {
+    typealias UIViewControllerType = MainViewController
+    func makeUIViewController(context: Context) -> MainViewController {
+        return MainViewController()
+    }
+    func updateUIViewController(_ uiViewController: MainViewController, context: Context) {
+    }
+}
+@available(iOS 13.0.0, *)
+struct MainViewPreview: PreviewProvider {
+    static var previews: some View {
+        MainViewControllerRepresentable()
     }
 }

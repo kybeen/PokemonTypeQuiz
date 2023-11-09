@@ -30,7 +30,6 @@ final class TypeCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-//        self.backgroundColor = .gray
         self.layer.borderWidth = 1
         self.layer.cornerRadius = 10
         setupUI()

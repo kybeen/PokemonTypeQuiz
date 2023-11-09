@@ -14,6 +14,8 @@
 		B8726B0B2AFCB1CF0084B49C /* PokemonData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8726B0A2AFCB1CF0084B49C /* PokemonData.swift */; };
 		B8726B0E2AFCB2AB0084B49C /* Pokemon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8726B0D2AFCB2AB0084B49C /* Pokemon.swift */; };
 		B8726B122AFCB6B30084B49C /* pokemonNames.csv in Resources */ = {isa = PBXBuildFile; fileRef = B8726B102AFCB6B20084B49C /* pokemonNames.csv */; };
+		B8726B142AFCC1F80084B49C /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8726B132AFCC1F80084B49C /* MainView.swift */; };
+		B8726B172AFCC27C0084B49C /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B8726B162AFCC27C0084B49C /* SnapKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,7 @@
 		B8726B0A2AFCB1CF0084B49C /* PokemonData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonData.swift; sourceTree = "<group>"; };
 		B8726B0D2AFCB2AB0084B49C /* Pokemon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon.swift; sourceTree = "<group>"; };
 		B8726B102AFCB6B20084B49C /* pokemonNames.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = pokemonNames.csv; sourceTree = "<group>"; };
+		B8726B132AFCC1F80084B49C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8726B172AFCC27C0084B49C /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +69,7 @@
 				B8726AFF2AFCAFCC0084B49C /* Assets.xcassets */,
 				B8726B042AFCAFCC0084B49C /* Info.plist */,
 				B8726B0A2AFCB1CF0084B49C /* PokemonData.swift */,
+				B8726B132AFCC1F80084B49C /* MainView.swift */,
 			);
 			path = PokemonTypeQuiz;
 			sourceTree = "<group>";
@@ -94,6 +99,9 @@
 			dependencies = (
 			);
 			name = PokemonTypeQuiz;
+			packageProductDependencies = (
+				B8726B162AFCC27C0084B49C /* SnapKit */,
+			);
 			productName = PokemonTypeQuiz;
 			productReference = B8726AF32AFCAFCB0084B49C /* PokemonTypeQuiz.app */;
 			productType = "com.apple.product-type.application";
@@ -122,6 +130,9 @@
 				Base,
 			);
 			mainGroup = B8726AEA2AFCAFCB0084B49C;
+			packageReferences = (
+				B8726B152AFCC27C0084B49C /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
 			productRefGroup = B8726AF42AFCAFCB0084B49C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -149,6 +160,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B8726B0E2AFCB2AB0084B49C /* Pokemon.swift in Sources */,
+				B8726B142AFCC1F80084B49C /* MainView.swift in Sources */,
 				B8726AFB2AFCAFCB0084B49C /* MainViewController.swift in Sources */,
 				B8726AF72AFCAFCB0084B49C /* AppDelegate.swift in Sources */,
 				B8726AF92AFCAFCB0084B49C /* SceneDelegate.swift in Sources */,
@@ -356,6 +368,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B8726B152AFCC27C0084B49C /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B8726B162AFCC27C0084B49C /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B8726B152AFCC27C0084B49C /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B8726AEB2AFCAFCB0084B49C /* Project object */;
 }

@@ -21,21 +21,29 @@
 
 ## 엔드포인트 & 데이터 구조
 
-HTTP GET 메서드만 지원
-- *https://pokeapi.co/api/v2/pokemon/{도감번호}*
-- 예시) 이상해씨(도감번호 1번) 👉 https://pokeapi.co/api/v2/pokemon/1
+*https://pokeapi.co/api/v2/pokemon/{도감번호}*
+- HTTP GET 메서드만 지원
+- ex) 이상해씨(도감번호 1번) 👉 https://pokeapi.co/api/v2/pokemon/1
     - **응답 결과** (포켓몬 특성, 서식지, 등장 시리즈 등 엄청나게 많은 양의 응답이 들어온다. 필요한 것만 골라쓰기)
-        <img width="797" alt="1" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/c63e2618-f83d-4e7e-b068-f9315dde32cb">
-        
+      
+      <img width="500" alt="1" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/c63e2618-f83d-4e7e-b068-f9315dde32cb">
+
+
     - **이름 ( `name` )**
-        <img width="602" alt="name" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/aeafa187-892e-4c93-b867-bf68932d6d3b">
-        
+      
+      <img width="400" alt="name" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/aeafa187-892e-4c93-b867-bf68932d6d3b">
+
+
     - **이미지URL ( `sprites` > `front_default` )**
-        <img width="784" alt="image" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/ed37a2a7-a9c3-4cd9-a898-eeb48a4a96da">
-        <img width="558" alt="image2" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/dec68643-3550-4ec5-bc71-47f43d5df500">
-        
+      
+      <img width="400" alt="image" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/ed37a2a7-a9c3-4cd9-a898-eeb48a4a96da">
+      <img width="400" alt="image2" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/dec68643-3550-4ec5-bc71-47f43d5df500">
+
+
     - **타입 ( `types` > 배열element > `type` > `name` )**
-        <img width="449" alt="type" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/0a7c865c-91bd-4ee7-921b-f83ff45d8ee9">
+      
+      <img width="400" alt="type" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/0a7c865c-91bd-4ee7-921b-f83ff45d8ee9">
+
 
 ## 📱 결과
 <img width="250" alt="type" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/37f69dcd-7e56-4c20-b2ad-19c23932d88a">

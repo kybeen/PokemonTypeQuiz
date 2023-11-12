@@ -7,21 +7,57 @@
 
 import Foundation
 
-struct Pokemon {
-    var id: Int // 도감번호
-    var name: String // 이름
-    var imageURL: String // 이미지
-//    var type1: PokemonType // 타입1
-//    var type2: PokemonType? // 타입2
-    var type1: String // 타입1
-    var type2: String? // 타입2
+// MARK: - 응답으로 받을 객체
+struct PokemonData: Codable {
+    let id: Int // 도감번호
+    let name: String // 이름
+    let sprites: Sprites // 종류 별 이미지 URL이 들어 있는 객체
+    let types: [TypeElement?] // 포켓몬 타입 정보가 들어 있는 객체의 배열
 }
 
+// 이미지 URL이 들어 있는 객체를 받기 위한 타입
+/// null 값으로 오는 경우도 있음
+struct Sprites: Codable {
+    let backDefault: String?
+    let backFemale: String?
+    let backShiny: String?
+    let backShinyFemale: String?
+    let frontDefault: String? // MARK: - 기본 앞모습 (사용할 데이터)
+    let frontFemale: String?
+    let frontShiny: String?
+    let frontShinyFemale: String?
+    
+    /// json파일의 데이터 이름과 프로퍼티의 이름이 다를 경우 필요한 설정
+    private enum CodingKeys: String, CodingKey {
+        case backDefault = "back_default"
+        case backFemale = "back_female"
+        case backShiny = "back_shiny"
+        case backShinyFemale = "back_shiny_female"
+        case frontDefault = "front_default"
+        case frontFemale = "front_female"
+        case frontShiny = "front_shiny"
+        case frontShinyFemale = "front_shiny_female"
+    }
+}
+
+// "types" 배열 값의 각 원소 (타입1, 타입2)
+struct TypeElement: Codable {
+    let slot: Int // 타입1, 타입2 구분
+    let type: TypeInfo // 타입 정보
+}
+// 타입 정보
+struct TypeInfo: Codable {
+    let name: String // MARK: - 타입명 (사용할 데이터)
+    let url: String // 타입에 해당하는 URI
+}
+
+// 타입 영어이름
 let englishType = [
     "normal", "fighting", "flying", "poison", "ground", "rock", "bug",
     "ghost", "steel", "fire", "water", "grass", "electric", "psychic",
     "ice", "dragon", "dark", "fairy"
 ]
+// 타입 한글이름
 let koreanType = [
     "노말", "격투", "비행", "독", "땅", "바위", "벌레", "고스트", "강철", "불꽃",
     "물", "풀", "전기", "에스퍼", "얼음", "드래곤", "악", "페어리"
@@ -48,8 +84,6 @@ let enToKoTypeDict = [
     "fairy": "페어리"
 ]
 
-let enToKoNameDict = ["Kabutops": "투구푸스", "Venusaur": "이상해꽃", "Starmie": "아쿠스타", "Snorlax": "잠만보", "Koffing": "또가스", "Psyduck": "고라파덕", "Golem": "딱구리", "Farfetch’d": "파오리", "Mankey": "망키", "Shellder": "셀러", "Electrode": "붐볼", "Nidorino": "니드리노", "Nidoran♀": "니드런♀", "Zubat": "주뱃", "Fearow": "깨비드릴조", "Sandshrew": "모래두지", "Dodrio": "두트리오", "Exeggcute": "아라리", "Ekans": "아보", "Hypno": "슬리퍼", "Geodude": "꼬마돌", "Voltorb": "찌리리공", "Rhydon": "코뿌리", "Gyarados": "갸라도스", "Kabuto": "투구", "Caterpie": "캐터피", "Blastoise": "거북왕", "Tangela": "덩쿠리", "Tauros": "켄타로스", "Poliwhirl": "슈륙챙이", "Grimer": "질퍽이", "Pidgey": "구구", "Alakazam": "후딘", "Jolteon": "쥬피썬더", "Sandslash": "고지", "Pikachu": "피카츄", "Clefable": "픽시", "Vaporeon": "샤미드", "Nidoqueen": "니드퀸", "Dugtrio": "닥트리오", "Lapras": "라프라스", "Primeape": "성원숭", "Graveler": "데구리", "Charizard": "리자몽", "Ninetales": "나인테일", "Exeggutor": "나시", "Poliwag": "발챙이", "Chansey": "럭키", "Tentacool": "왕눈해", "Lickitung": "내루미", "Venomoth": "도나리", "Ditto": "메타몽", "Magneton": "레어코일", "Porygon": "폴리곤", "Pidgeot": "피죤투", "Mewtwo": "뮤츠", "Bulbasaur": "이상해씨", "Doduo": "두두", "Seadra": "시드라", "Raticate": "레트라", "Magikarp": "잉어킹", "Machop": "알통몬", "Drowzee": "슬리프", "Metapod": "단데기", "Wartortle": "어니부기", "Diglett": "디그다", "Jynx": "루주라", "Omastar": "암스타", "Dragonite": "망나뇽", "Zapdos": "썬더", "Vileplume": "라플레시아", "Spearow": "깨비참", "Squirtle": "꼬부기", "Slowbro": "야도란", "Machamp": "괴력몬", "Kakuna": "딱충이", "Abra": "캐이시", "Hitmonlee": "시라소몬", "Bellsprout": "모다피", "Gengar": "팬텀", "Nidorina": "니드리나", "Goldeen": "콘치", "Aerodactyl": "프테라", "Cloyster": "파르셀", "Cubone": "탕구리", "Dragonair": "신뇽", "Flareon": "부스터", "Mr. Mime": "마임맨", "Rapidash": "날쌩마", "Paras": "파라스", "Horsea": "쏘드라", "Kangaskhan": "캥카", "Gloom": "냄새꼬", "Dratini": "미뇽", "Onix": "롱스톤", "Jigglypuff": "푸린", "Charmeleon": "리자드", "Pinsir": "쁘사이저", "Moltres": "파이어", "Articuno": "프리져", "Dewgong": "쥬레곤", "Machoke": "근육몬", "Kadabra": "윤겔라", "Vulpix": "식스테일", "Charmander": "파이리", "Magnemite": "코일", "Ponyta": "포니타", "Nidoran♂": "니드런♂", "Parasect": "파라섹트", "Muk": "질뻐기", "Weepinbell": "우츠동", "Marowak": "텅구리", "Wigglytuff": "푸크린", "Tentacruel": "독파리", "Pidgeotto": "피죤", "Krabby": "크랩", "Hitmonchan": "홍수몬", "Staryu": "별가사리", "Omanyte": "암나이트", "Mew": "뮤", "Arcanine": "윈디", "Eevee": "이브이", "Poliwrath": "강챙이", "Magmar": "마그마", "Nidoking": "니드킹", "Ivysaur": "이상해풀", "Clefairy": "삐삐", "Golbat": "골뱃", "Slowpoke": "야돈", "Beedrill": "독침붕", "Haunter": "고우스트", "Arbok": "아보크", "Rhyhorn": "뿔카노", "Seel": "쥬쥬", "Persian": "페르시온", "Gastly": "고오스", "Raichu": "라이츄", "Victreebel": "우츠보트", "Rattata": "꼬렛", "Weedle": "뿔충이", "Growlithe": "가디", "Kingler": "킹크랩", "Seaking": "왕콘치", "Electabuzz": "에레브", "Meowth": "나옹", "Venonat": "콘팡", "Golduck": "골덕", "Oddish": "뚜벅쵸", "Butterfree": "버터플", "Scyther": "스라크", "Weezing": "또도가스"]
-
 //// 포켓몬 타입
 //enum PokemonType: String, CaseIterable {
 //    case normal = "노말"
@@ -71,17 +105,6 @@ let enToKoNameDict = ["Kabutops": "투구푸스", "Venusaur": "이상해꽃", "S
 //    case dark = "악"
 //    case fairy = "페어리"
 //
-////    var dayString: String {
-////        switch self {
-////        case .mon: return "월"
-////        case .tue: return "화"
-////        case .wed: return "수"
-////        case .thu: return "목"
-////        case .fri: return "금"
-////        case .sat: return "토"
-////        case .sun: return "일"
-////        }
-////    }
 //}
 
 extension String {

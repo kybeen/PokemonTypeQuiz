@@ -271,11 +271,15 @@ extension MainViewController: UICollectionViewDataSource {
                 return
             }
             if userTypeAnswer.contains(idx) {
-//                cell.layer.borderWidth = 5
+                cell.layer.borderWidth = 3
+                cell.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
                 cell.backgroundColor = .gray.withAlphaComponent(0.5)
+                cell.typeNameLabel.font = UIFont.boldSystemFont(ofSize: 18)
             } else {
-//                cell.layer.borderWidth = 1
+                cell.layer.borderWidth = 1
+                cell.layer.borderColor = UIColor.black.cgColor
                 cell.backgroundColor = .clear
+                cell.typeNameLabel.font = UIFont.systemFont(ofSize: 16)
             }
         }
     }

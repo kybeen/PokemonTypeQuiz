@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - ] 타입 버튼 컬렉션 뷰 셀
 final class TypeCollectionViewCell: UICollectionViewCell {
 
     static let cellIdentifier = "typeCollectionViewCell"

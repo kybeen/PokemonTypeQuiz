@@ -9,44 +9,56 @@ import UIKit
 
 final class MainView: UIView {
 
+    // 도감번호
     let pokemonID: UILabel = {
         let pokemonID = UILabel()
         pokemonID.text = "도감번호: ??"
         pokemonID.textAlignment = .center
         pokemonID.textColor = .black
-//        pokemonID.backgroundColor = .gray
         return pokemonID
     }()
+
+    // 이름
     let pokemonName: UILabel = {
         let pokemonName = UILabel()
         pokemonName.text = "불러오는중..."
         pokemonName.textAlignment = .center
         pokemonName.font = UIFont.boldSystemFont(ofSize: 30)
-//        pokemonName.backgroundColor = .orange
         return pokemonName
     }()
+
+    // 이미지
     let pokemonImageView: UIImageView = {
         let pokemonImageView = UIImageView()
         pokemonImageView.contentMode = .scaleAspectFill
-//        pokemonImageView.backgroundColor = .blue
         return pokemonImageView
     }()
+
+    // 타입 선택 버튼 컬렉션 뷰
     let typeCollectionView: UICollectionView = {
         let typeCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-//        typeCollectionView.backgroundColor = .red
         typeCollectionView.backgroundColor = .clear
         return typeCollectionView
     }()
+
+    // 정답 제출 버튼
     let submitButton: UIButton = {
         let submitButton = UIButton()
-        submitButton.setTitle("정답 제출", for: .normal)
-        submitButton.backgroundColor = .systemBlue
-        submitButton.setTitleColor(.white, for: .normal)
-        submitButton.layer.cornerRadius = 15
-        submitButton.layer.masksToBounds = true
         
-        submitButton.setBackgroundImage(UIImage(color: .blue), for: .highlighted)
-        
+        var titleAttr = AttributedString("정답 제출하기")
+        titleAttr.font = UIFont.boldSystemFont(ofSize: 24)
+        titleAttr.foregroundColor = .white
+        var config = UIButton.Configuration.filled()
+        config.attributedTitle = titleAttr
+        config.background.cornerRadius = 15
+        config.baseBackgroundColor = .systemBlue
+//        config.contentInsets = NSDirectionalEdgeInsets(
+//            top: 5,
+//            leading: 10,
+//            bottom: 5,
+//            trailing: 10
+//        )
+        submitButton.configuration = config
         return submitButton
     }()
 
@@ -96,16 +108,3 @@ final class MainView: UIView {
         }
     }
 }
-
-extension UIImage {
-    convenience init(color: UIColor) {
-        let rect = CGRect(origin: .zero, size: CGSize(width: 1, height: 1))
-        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
-        color.setFill()
-        UIRectFill(rect)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        self.init(cgImage: (image?.cgImage)!)
-    }
-}
-

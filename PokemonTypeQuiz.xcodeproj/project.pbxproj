@@ -11,7 +11,6 @@
 		B8726AF92AFCAFCB0084B49C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8726AF82AFCAFCB0084B49C /* SceneDelegate.swift */; };
 		B8726AFB2AFCAFCB0084B49C /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8726AFA2AFCAFCB0084B49C /* MainViewController.swift */; };
 		B8726B002AFCAFCC0084B49C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8726AFF2AFCAFCC0084B49C /* Assets.xcassets */; };
-		B8726B0B2AFCB1CF0084B49C /* PokemonData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8726B0A2AFCB1CF0084B49C /* PokemonData.swift */; };
 		B8726B0E2AFCB2AB0084B49C /* Pokemon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8726B0D2AFCB2AB0084B49C /* Pokemon.swift */; };
 		B8726B142AFCC1F80084B49C /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8726B132AFCC1F80084B49C /* MainView.swift */; };
 		B8726B172AFCC27C0084B49C /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B8726B162AFCC27C0084B49C /* SnapKit */; };
@@ -26,7 +25,6 @@
 		B8726AFA2AFCAFCB0084B49C /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		B8726AFF2AFCAFCC0084B49C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B8726B042AFCAFCC0084B49C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B8726B0A2AFCB1CF0084B49C /* PokemonData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonData.swift; sourceTree = "<group>"; };
 		B8726B0D2AFCB2AB0084B49C /* Pokemon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon.swift; sourceTree = "<group>"; };
 		B8726B132AFCC1F80084B49C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		B8726B182AFCCAEE0084B49C /* TypeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -70,7 +68,6 @@
 				B8726AFA2AFCAFCB0084B49C /* MainViewController.swift */,
 				B8726AFF2AFCAFCC0084B49C /* Assets.xcassets */,
 				B8726B042AFCAFCC0084B49C /* Info.plist */,
-				B8726B0A2AFCB1CF0084B49C /* PokemonData.swift */,
 				B8726B132AFCC1F80084B49C /* MainView.swift */,
 				B8726B182AFCCAEE0084B49C /* TypeCollectionViewCell.swift */,
 			);
@@ -168,7 +165,6 @@
 				B8726B192AFCCAEE0084B49C /* TypeCollectionViewCell.swift in Sources */,
 				B8726AF72AFCAFCB0084B49C /* AppDelegate.swift in Sources */,
 				B8726AF92AFCAFCB0084B49C /* SceneDelegate.swift in Sources */,
-				B8726B0B2AFCB1CF0084B49C /* PokemonData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,7 +12,7 @@ import SnapKit
 class MainViewController: UIViewController {
 
     private let mainView = MainView()
-    var pokemonNameDictionary = [String:String]()
+    var pokemonNameDictionary = [String:String]() // 영어:한글 쌍의 포켓몬 이름 딕셔너리
     var type1Answer: String? // 포켓몬의 타입1
     var type2Answer: String? // 포켓몬의 타입2
     
@@ -33,85 +33,101 @@ class MainViewController: UIViewController {
         
         mainView.submitButton.addTarget(self, action: #selector(submitAnswer), for: .touchUpInside)
 
+        // 번역된 포켓몬 이름 CSV 데이터 불러오기
         loadPokemonNameCSV()
+        // 1~151 중 랜덤한 도감번호의 포켓몬 불러오기
         loadRandomPokemon(id: randomIDGenerator())
     }
 
-    // 랜덤 포켓몬 불러오기
+    // MARK: - 도감 번호 랜덤 추출
+    private func randomIDGenerator() -> Int {
+        // 1~151 번 중에서 랜덤
+        let randomNumber = Int.random(in: 0...151)
+        return randomNumber
+    }
+}
+
+// MARK: - 네트워크 통신 관련
+extension MainViewController {
+
+    // 에러 타입
+    enum NetworkError: Error {
+        case invalidURL
+        case invalidResponse
+    }
+    enum ImageError: Error {
+        case invalidData
+    }
+
+    // MARK: - 랜덤 포켓몬 불러오기
     private func loadRandomPokemon(id: Int) {
+        // id 도감번호에 해당하는 포켓몬을 호출하기 위한 엔드포인트
         let url = "https://pokeapi.co/api/v2/pokemon/\(id)"
-        let apiURI: URL! = URL(string: url)
-        
-        let apiTask = URLSession.shared.dataTask(with: apiURI) { (data, response, error) in
+        guard let apiURI = URL(string: url) else { return }
+
+        let session = URLSession(configuration: .default)
+        session.dataTask(with: apiURI) { data, response, error in
             if let error = error {
                 print("error: \(error)")
-            } else if let data = data {
-                DispatchQueue.main.async {
-                    do {
-                        let apiDictionary = try JSONSerialization.jsonObject(with: data, options: []) as! NSDictionary
-                        
-                        // 도감번호
-                        let idValue = apiDictionary["id"] as! Int
-                        // 영문이름
-                        let nameValue = apiDictionary["name"] as! String
-                        // 이미지 URL
-                        let sprites = apiDictionary["sprites"] as! NSDictionary
-                        let imageURLValue = sprites["front_default"] as! String
-                        // 타입1
-                        let typesArr = apiDictionary["types"] as! NSArray
-                        let type1Value: String = {
-                            let dict = typesArr[0] as! NSDictionary
-                            let dict2 = dict["type"] as! NSDictionary
-                            let type1 = dict2["name"] as! String
-                            return type1
-                        }()
-                        // 타입2
-                        var type2Value: String?
-                        if typesArr.count > 1 {
-                            let dict = typesArr[1] as! NSDictionary
-                            let dict2 = dict["type"] as! NSDictionary
-                            let type2 = dict2["name"] as! String
-                            type2Value = type2
-                        }
+            }
+            guard let data = data else {
+                return
+            }
 
-                        self.mainView.pokemonID.text = "도감번호: \(idValue)"
-                        self.mainView.pokemonName.text = self.pokemonNameDictionary[nameValue.capitalized]
-                        if let value = enToKoNameDict[nameValue] {
-                            self.mainView.pokemonName.text = value
+            // 응답으로 받은 객체를 PokemonData 타입으로 디코딩해서 처리
+            do {
+                let pokemonData = try JSONDecoder().decode(PokemonData.self, from: data)
+                DispatchQueue.main.async {
+
+                    // 도감 번호 처리
+                    self.mainView.pokemonID.text = "도감번호: \(pokemonData.id)"
+
+                    // 이름 처리
+                    // TODO: - 마임맨(mr-mime) 👉 예외처리 필요 (-가 있어서 딕셔너리 키값으로 검색이 안됨)
+                    let koreanName = self.pokemonNameDictionary[pokemonData.name.capitalized] // 한글 이름 매핑
+                    self.mainView.pokemonName.text = koreanName
+
+                    // 이미지 처리
+                    Task {
+                        self.mainView.pokemonImageView.image = try await self.fetchPokemonImage(for: pokemonData.sprites.frontDefault!)
+                    }
+                    
+                    // 타입1 처리
+                    if let type1 = pokemonData.types[0] {
+                        self.type1Answer = type1.type.name
+                    }
+                    // 타입2 처리
+                    if pokemonData.types.count > 1 {
+                        if let type2 = pokemonData.types[1] {
+                            self.type2Answer = type2.type.name
                         }
-                        self.type1Answer = type1Value
-                        self.type2Answer = type2Value
-                        
-                        let imageURL: URL! = URL(string: imageURLValue)
-                        let task = URLSession.shared.dataTask(with: imageURL) { (data, response, error) in
-                            if let error = error {
-                                print("error: \(error)")
-                            } else if let data = data {
-                                DispatchQueue.main.async {
-                                    self.mainView.pokemonImageView.image = UIImage(data: data)
-                                }
-                            }
-                        }
-                        task.resume()
-                    } catch {
-                        print("오류")
                     }
                 }
+            } catch {
+                print("에러")
             }
-        }
-        apiTask.resume()
+        }.resume()
     }
-    // 도감 번호 랜덤 추출
-    private func randomIDGenerator() -> Int {
-        let randomNumber = Int(arc4random_uniform(151)) + 1
-        return randomNumber
+
+    // MARK: - 이미지 로드 메서드 (async 사용)
+    private func fetchPokemonImage(for id: String) async throws -> UIImage {
+        let request = URLRequest(url: URL(string: id)!)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+            throw NetworkError.invalidResponse
+        }
+        let image = UIImage(data: data)
+        guard let image = image else{
+            throw ImageError.invalidData
+        }
+        return image
     }
 }
 
 // MARK: - CSV 데이터 처리 관련 메서드
 extension MainViewController {
 
-    // MARK: - 포켓몬 이름 데이터 불러오기
+    // 번역된 포켓몬 이름 CSV 데이터를 불러오는 메서드
     private func loadPokemonNameCSV() {
         print("loadPokemonNameCSV()...")
         let path = Bundle.main.path(forResource: "pokemonNames", ofType: "csv")!
@@ -218,6 +234,9 @@ extension MainViewController {
         let ok = UIAlertAction(title: "확인", style: .cancel)
         alert.addAction(ok)
         present(alert, animated: true)
+        // 정답 초기화
+        type1Answer = nil
+        type2Answer = nil
     }
 
     // 틀렸을 때

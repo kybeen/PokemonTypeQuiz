@@ -120,33 +120,34 @@ extension MainViewController {
         parseCSV(url: URL(fileURLWithPath: path))
     }
     
-    // MARK: - CSV 파일을 파싱하는 메서드
+    // CSV 파일을 파싱하는 메서드
     private func parseCSV(url: URL) {
         print("parseCSV()...")
-        do {
-            let data = try Data(contentsOf: url)
-            if let dataEncoded = String(data: data, encoding: .utf8) {
-                var lines = dataEncoded.components(separatedBy: "\n")
-                lines.removeFirst()
-                
-                var koName = ""
-                var enName = ""
-                for line in lines {
-                    let columns = line.components(separatedBy: ",")
-                    guard columns.count == 4 else {
-                        break
-                    }
-                    if columns[1] == "3" {
-                        koName = columns[2]
-                    } else if columns[1] == "9" {
-                        enName = columns[2]
-                        pokemonNameDictionary[enName] = koName
-                    }
+        let data = try? Data(contentsOf: url) /// Data(contentsOf:) 는 동기적으로 작동함 👉 메인 스레드를 잡아먹기 때문에 네트워크 통신에서는 사용하지 맙시다
+        guard let data = data else {
+            print("CSV 파일을 불러오지 못함")
+            return
+        }
+        print("CSV 파일을 불러왔습니다!!")
+        if let dataEncoded = String(data: data, encoding: .utf8) {
+            var lines = dataEncoded.components(separatedBy: "\n")
+            lines.removeFirst()
+            
+            var koName = ""
+            var enName = ""
+            for line in lines {
+                let columns = line.components(separatedBy: ",")
+                guard columns.count == 4 else {
+                    break
                 }
-                print(pokemonNameDictionary)
+                if columns[1] == "3" {
+                    koName = columns[2]
+                } else if columns[1] == "9" {
+                    enName = columns[2]
+                    pokemonNameDictionary[enName] = koName
+                }
             }
-        } catch {
-            print("CSV 파일을 읽는 도중 에러가 발생했습니다!!")
+//            print(pokemonNameDictionary)
         }
     }
 }
@@ -233,7 +234,7 @@ extension MainViewController: UICollectionViewDataSource {
 
     // 컬렉션 뷰 아이템 개수 설정
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return englishType.count
+        return enToKoTypeDict.count
     }
     
     // 컬렉션 뷰 구성

@@ -13,8 +13,8 @@ class MainViewController: UIViewController {
 
     private let mainView = MainView()
     var pokemonNameDictionary = [String:String]() // 영어:한글 쌍의 포켓몬 이름 딕셔너리
-    var type1Answer: String? // 포켓몬의 타입1
-    var type2Answer: String? // 포켓몬의 타입2
+    var type1Answer: PokemonType? // 포켓몬의 타입1
+    var type2Answer: PokemonType? // 포켓몬의 타입2
     
     var userTypeAnswer = [Int]() // 유저가 선택한 타입(인덱스) 배열
 
@@ -94,12 +94,12 @@ extension MainViewController {
                     
                     // 타입1 처리
                     if let type1 = pokemonData.types[0] {
-                        self.type1Answer = type1.type.name
+                        self.type1Answer = PokemonType(rawValue: type1.type.name)
                     }
                     // 타입2 처리
                     if pokemonData.types.count > 1 {
                         if let type2 = pokemonData.types[1] {
-                            self.type2Answer = type2.type.name
+                            self.type2Answer = PokemonType(rawValue: type2.type.name)
                         }
                     }
                 }
@@ -176,7 +176,7 @@ extension MainViewController {
         if userTypeAnswer.count == 0 {
             noValueAlert()
         } else {
-            let answerArr = convertIndexToTypeString(userTypeAnswer: userTypeAnswer)
+            let answerArr = convertIndexToPokemonType(userTypeAnswer: userTypeAnswer)
             if let type2Answer = type2Answer { // 포켓몬의 타입이 2개일 때
                 // 둘 다 정답 배열에 있으면 정답
                 if answerArr.contains(type1Answer!) && answerArr.contains(type2Answer) {
@@ -205,14 +205,14 @@ extension MainViewController {
         print(userTypeAnswer)
     }
 
-    // 타입 인덱스가 들어 있는 정답 배열을 타입 String 값이 들어 있는 배열로 바꿔서 반환
-    func convertIndexToTypeString(userTypeAnswer: [Int]) -> [String] {
-        var typeStringArr = [String]()
+    // 타입 인덱스가 들어 있는 정답 배열을 PokemonType 값이 들어 있는 배열로 바꿔서 반환
+    func convertIndexToPokemonType(userTypeAnswer: [Int]) -> [PokemonType] {
+        var pokemonTypeArr = [PokemonType]()
         for idx in userTypeAnswer {
-            let value = englishType[idx]
-            typeStringArr.append(value)
+            let value = PokemonType.allCases[idx]
+            pokemonTypeArr.append(value)
         }
-        return typeStringArr
+        return pokemonTypeArr
     }
 
     // 선택한 타입이 없을 때
@@ -224,12 +224,15 @@ extension MainViewController {
     }
 
     // 정답일 때
-    private func correctAlert(type1: String, type2: String?) {
+    private func correctAlert(type1: PokemonType, type2: PokemonType?) {
         var alert: UIAlertController
         if let type2 = type2 { // 타입이 2개일 때
-            alert = UIAlertController(title: "정답입니다!!!", message: "타입: \(enToKoTypeDict[type1]!), \(enToKoTypeDict[type2]!)", preferredStyle: .alert)
+            let koType1 = type1.koType
+            let koType2 = type2.koType
+            alert = UIAlertController(title: "정답입니다!!!", message: "타입: \(koType1), \(koType2)", preferredStyle: .alert)
         } else { // 타입이 1개일 때
-            alert = UIAlertController(title: "정답입니다!!!", message: "타입: \(enToKoTypeDict[type1]!)", preferredStyle: .alert)
+            let koType1 = type1.koType
+            alert = UIAlertController(title: "정답입니다!!!", message: "타입: \(koType1)", preferredStyle: .alert)
         }
         let ok = UIAlertAction(title: "확인", style: .cancel)
         alert.addAction(ok)
@@ -253,7 +256,7 @@ extension MainViewController: UICollectionViewDataSource {
 
     // 컬렉션 뷰 아이템 개수 설정
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return enToKoTypeDict.count
+        return PokemonType.allCases.count
     }
     
     // 컬렉션 뷰 구성
@@ -261,8 +264,8 @@ extension MainViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TypeCollectionViewCell.cellIdentifier, for: indexPath) as? TypeCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.typeImageView.image = UIImage(named: englishType[indexPath.row])
-        cell.typeNameLabel.text = koreanType[indexPath.row]
+        cell.typeImageView.image = UIImage(named: PokemonType.allCases[indexPath.row].rawValue)
+        cell.typeNameLabel.text = PokemonType.allCases[indexPath.row].koType
         return cell
     }
     

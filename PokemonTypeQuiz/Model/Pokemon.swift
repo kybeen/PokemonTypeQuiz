@@ -51,61 +51,70 @@ struct TypeInfo: Codable {
     let url: String // 타입에 해당하는 URI
 }
 
-// 타입 영어이름
-let englishType = [
-    "normal", "fighting", "flying", "poison", "ground", "rock", "bug",
-    "ghost", "steel", "fire", "water", "grass", "electric", "psychic",
-    "ice", "dragon", "dark", "fairy"
-]
-// 타입 한글이름
-let koreanType = [
-    "노말", "격투", "비행", "독", "땅", "바위", "벌레", "고스트", "강철", "불꽃",
-    "물", "풀", "전기", "에스퍼", "얼음", "드래곤", "악", "페어리"
-]
+// 포켓몬 타입
+enum PokemonType: String, CaseIterable {
+    
+    case normal
+    case fighting
+    case flying
+    case poison
+    case ground
+    case rock
+    case bug
+    case ghost
+    case steel
+    case fire
+    case water
+    case grass
+    case electric
+    case psychic
+    case ice
+    case dragon
+    case dark
+    case fairy
 
-let enToKoTypeDict = [
-    "normal": "노말",
-    "fighting": "격투",
-    "flying": "비행",
-    "poison": "독",
-    "ground": "땅",
-    "rock": "바위",
-    "bug": "벌레",
-    "ghost": "고스트",
-    "steel": "강철",
-    "fire": "불꽃",
-    "water": "물",
-    "grass": "풀",
-    "electric": "전기",
-    "psychic": "에스퍼",
-    "ice": "얼음",
-    "dragon": "드래곤",
-    "dark": "악",
-    "fairy": "페어리"
-]
-
-//// 포켓몬 타입
-//enum PokemonType: String, CaseIterable {
-//    case normal = "노말"
-//    case fighting = "격투"
-//    case flying = "비행"
-//    case poison = "독"
-//    case ground = "땅"
-//    case rock = "바위"
-//    case bug = "벌레"
-//    case ghost = "고스트"
-//    case steel = "강철"
-//    case fire = "불꽃"
-//    case water = "물"
-//    case grass = "풀"
-//    case electric = "전기"
-//    case psychic = "에스퍼"
-//    case ice = "얼음"
-//    case dragon = "드래곤"
-//    case dark = "악"
-//    case fairy = "페어리"
-//
-//}
+    // 타입의 한글 이름을 반환
+    var koType: String {
+        switch self {
+        case .normal:
+            return "노말"
+        case .fighting:
+            return "격투"
+        case .flying:
+            return "비행"
+        case .poison:
+            return "독"
+        case .ground:
+            return "땅"
+        case .rock:
+            return "바위"
+        case .bug:
+            return "벌레"
+        case .ghost:
+            return "고스트"
+        case .steel:
+            return "강철"
+        case .fire:
+            return "불꽃"
+        case .water:
+            return "물"
+        case .grass:
+            return "풀"
+        case .electric:
+            return "전기"
+        case .psychic:
+            return "에스퍼"
+        case .ice:
+            return "얼음"
+        case .dragon:
+            return "드래곤"
+        case .dark:
+            return "악"
+        case .fairy:
+            return "페어리"
+        }
+    }
+}
 
 extension String {
 

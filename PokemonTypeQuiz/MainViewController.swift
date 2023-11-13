@@ -31,6 +31,7 @@ class MainViewController: UIViewController {
         mainView.typeCollectionView.delegate = self
         mainView.typeCollectionView.dataSource = self
         
+        mainView.changeButton.addTarget(self, action: #selector(changePokemon), for: .touchUpInside)
         mainView.submitButton.addTarget(self, action: #selector(submitAnswer), for: .touchUpInside)
 
         // 번역된 포켓몬 이름 CSV 데이터 불러오기
@@ -121,6 +122,19 @@ extension MainViewController {
             throw ImageError.invalidData
         }
         return image
+    }
+
+    // MARK: - 포켓몬 변경 버튼 클릭 시 호출
+    @objc func changePokemon() {
+        mainView.pokemonID.text = "도감번호: "
+        mainView.pokemonName.text = "불러오는 중..."
+        mainView.pokemonImageView.image = nil
+        // 정답 내용 초기화
+        type1Answer = nil
+        type2Answer = nil
+        userTypeAnswer = []
+        reloadValues(collectionView: mainView.typeCollectionView)
+        loadRandomPokemon(id: randomIDGenerator())
     }
 }
 
@@ -237,9 +251,8 @@ extension MainViewController {
         let ok = UIAlertAction(title: "확인", style: .cancel)
         alert.addAction(ok)
         present(alert, animated: true)
-        // 정답 초기화
-        type1Answer = nil
-        type2Answer = nil
+        // 포켓몬 변경
+        changePokemon()
     }
 
     // 틀렸을 때
@@ -317,23 +330,5 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
     // 컬렉션 뷰의 사이즈
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 60, height: 80)
-    }
-}
-
-// MARK: - Preview canvas 세팅
-import SwiftUI
-
-struct MainViewControllerRepresentable: UIViewControllerRepresentable {
-    typealias UIViewControllerType = MainViewController
-    func makeUIViewController(context: Context) -> MainViewController {
-        return MainViewController()
-    }
-    func updateUIViewController(_ uiViewController: MainViewController, context: Context) {
-    }
-}
-@available(iOS 13.0.0, *)
-struct MainViewPreview: PreviewProvider {
-    static var previews: some View {
-        MainViewControllerRepresentable()
     }
 }

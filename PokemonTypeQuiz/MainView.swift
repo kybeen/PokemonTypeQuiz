@@ -34,6 +34,20 @@ final class MainView: UIView {
         return pokemonImageView
     }()
 
+    // 포켓몬 변경 버튼
+    let changeButton: UIButton = {
+        let reloadButton = UIButton()
+        // SF Symbol 설정
+        let symbolFont = UIFont.boldSystemFont(ofSize: 20)
+        let symbolConfiguration = UIImage.SymbolConfiguration(font: symbolFont)
+        let symbolImage = UIImage(systemName: "arrow.counterclockwise", withConfiguration: symbolConfiguration)
+        var config = UIButton.Configuration.plain()
+        config.image = symbolImage
+        config.imagePlacement = .bottom
+        reloadButton.configuration = config
+        return reloadButton
+    }()
+
     // 타입 선택 버튼 컬렉션 뷰
     let typeCollectionView: UICollectionView = {
         let typeCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -52,12 +66,6 @@ final class MainView: UIView {
         config.attributedTitle = titleAttr
         config.background.cornerRadius = 15
         config.baseBackgroundColor = .systemBlue
-//        config.contentInsets = NSDirectionalEdgeInsets(
-//            top: 5,
-//            leading: 10,
-//            bottom: 5,
-//            trailing: 10
-//        )
         submitButton.configuration = config
         return submitButton
     }()
@@ -106,5 +114,29 @@ final class MainView: UIView {
             make.top.equalTo(typeCollectionView.snp.bottom).offset(20)
             make.height.equalTo(60)
         }
+
+        addSubview(changeButton)
+        changeButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(30)
+            make.centerY.equalTo(pokemonImageView)
+        }
+    }
+}
+
+// MARK: - Preview canvas 세팅
+import SwiftUI
+
+struct MainViewControllerRepresentable: UIViewControllerRepresentable {
+    typealias UIViewControllerType = MainViewController
+    func makeUIViewController(context: Context) -> MainViewController {
+        return MainViewController()
+    }
+    func updateUIViewController(_ uiViewController: MainViewController, context: Context) {
+    }
+}
+@available(iOS 13.0.0, *)
+struct MainViewPreview: PreviewProvider {
+    static var previews: some View {
+        MainViewControllerRepresentable()
     }
 }

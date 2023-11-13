@@ -191,27 +191,24 @@ extension MainViewController {
             noValueAlert()
         } else {
             let answerArr = convertIndexToPokemonType(userTypeAnswer: userTypeAnswer)
-            if let type2Answer = type2Answer { // 포켓몬의 타입이 2개일 때
+            if let type1Answer = type1Answer,
+               let type2Answer = type2Answer { // 포켓몬의 타입이 2개일 때
                 // 둘 다 정답 배열에 있으면 정답
-                if answerArr.contains(type1Answer!) && answerArr.contains(type2Answer) {
-                    correctAlert(type1: type1Answer!, type2: type2Answer)
-                    userTypeAnswer = []
-                    reloadValues(collectionView: mainView.typeCollectionView)
-                    loadRandomPokemon(id: randomIDGenerator())
+                if answerArr.contains(type1Answer) && answerArr.contains(type2Answer) {
+                    correctAlert(type1: type1Answer, type2: type2Answer)
                 } else {
                     failAlert()
                 }
             } else { // 포켓몬의 타입이 1개일 때
-                if answerArr.count == 2 { // 타입을 2개 골랐으면 틀림
-                    failAlert()
-                } else {
-                    if answerArr.contains(type1Answer!) {
-                        correctAlert(type1: type1Answer!, type2: type2Answer)
-                        userTypeAnswer = []
-                        reloadValues(collectionView: mainView.typeCollectionView)
-                        loadRandomPokemon(id: randomIDGenerator())
-                    } else {
+                if !(type1Answer == nil && type2Answer == nil) { // 정답 값이 둘 다 nil인 경우 예외처리
+                    if answerArr.count == 2 { // 타입을 2개 골랐으면 틀림
                         failAlert()
+                    } else {
+                        if answerArr.contains(type1Answer!) {
+                            correctAlert(type1: type1Answer!, type2: type2Answer)
+                        } else {
+                            failAlert()
+                        }
                     }
                 }
             }

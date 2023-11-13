@@ -47,3 +47,9 @@
 
 ## 📱 결과
 <img width="250" alt="type" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/37f69dcd-7e56-4c20-b2ad-19c23932d88a">
+<img width="250" alt="type" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/4547336a-fdf8-4358-aa1e-2408fadb0c1e">
+
+
+
+
+

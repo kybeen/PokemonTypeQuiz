@@ -45,7 +45,7 @@
       <img width="400" alt="type" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/0a7c865c-91bd-4ee7-921b-f83ff45d8ee9">
 
 ## 코드
-### ✅ 도감번호 1~151 랜덤 추출 & 도감 번호에 해당하는 포켓몬 불러오기
+### 💡 도감번호 1~151 랜덤 추출 & 도감 번호에 해당하는 포켓몬 불러오기
 ```
 // MARK: - 도감 번호 랜덤 추출
 private func randomIDGenerator() -> Int {
@@ -105,7 +105,7 @@ private func loadRandomPokemon(id: Int) {
 }
 ```
 
-### 포켓몬 데이터 모델 정의
+### 💡 포켓몬 데이터 모델 정의
 ```
 // MARK: - 응답으로 받을 객체
 /**

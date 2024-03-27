@@ -1,5 +1,5 @@
 //
-//  MainViewController.swift
+//  QuizViewController.swift
 //  PokemonTypeQuiz
 //
 //  Created by 김영빈 on 2023/11/09.
@@ -9,9 +9,9 @@ import UIKit
 
 import SnapKit
 
-class MainViewController: UIViewController {
+class QuizViewController: UIViewController {
 
-    private let mainView = MainView()
+    private let quizView = QuizView()
     var pokemonNameDictionary = [String:String]() // 영어:한글 쌍의 포켓몬 이름 딕셔너리
     var type1Answer: PokemonType? // 포켓몬의 타입1
     var type2Answer: PokemonType? // 포켓몬의 타입2
@@ -20,19 +20,19 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(mainView)
-        mainView.snp.makeConstraints { make in
+        view.addSubview(quizView)
+        quizView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        mainView.typeCollectionView.register(
+        quizView.typeCollectionView.register(
             TypeCollectionViewCell.self,
             forCellWithReuseIdentifier: TypeCollectionViewCell.cellIdentifier
         )
-        mainView.typeCollectionView.delegate = self
-        mainView.typeCollectionView.dataSource = self
+        quizView.typeCollectionView.delegate = self
+        quizView.typeCollectionView.dataSource = self
         
-        mainView.changeButton.addTarget(self, action: #selector(changePokemon), for: .touchUpInside)
-        mainView.submitButton.addTarget(self, action: #selector(submitAnswer), for: .touchUpInside)
+        quizView.changeButton.addTarget(self, action: #selector(changePokemon), for: .touchUpInside)
+        quizView.submitButton.addTarget(self, action: #selector(submitAnswer), for: .touchUpInside)
 
         // 번역된 포켓몬 이름 CSV 데이터 불러오기
         loadPokemonNameCSV()
@@ -46,10 +46,14 @@ class MainViewController: UIViewController {
         let randomNumber = Int.random(in: 0...151)
         return randomNumber
     }
+    
+    deinit {
+        print("QuizViewController deinitialized 🚮")
+    }
 }
 
 // MARK: - 네트워크 통신 관련
-extension MainViewController {
+extension QuizViewController {
 
     // 에러 타입
     enum NetworkError: Error {
@@ -81,16 +85,16 @@ extension MainViewController {
                 DispatchQueue.main.async {
 
                     // 도감 번호 처리
-                    self.mainView.pokemonID.text = "도감번호: \(pokemonData.id)"
+                    self.quizView.pokemonID.text = "도감번호: \(pokemonData.id)"
 
                     // 이름 처리
                     // TODO: - 마임맨(mr-mime) 👉 예외처리 필요 (-가 있어서 딕셔너리 키값으로 검색이 안됨)
                     let koreanName = self.pokemonNameDictionary[pokemonData.name.capitalized] // 한글 이름 매핑
-                    self.mainView.pokemonName.text = koreanName
+                    self.quizView.pokemonName.text = koreanName
 
                     // 이미지 처리
                     Task {
-                        self.mainView.pokemonImageView.image = try await self.fetchPokemonImage(for: pokemonData.sprites.frontDefault!)
+                        self.quizView.pokemonImageView.image = try await self.fetchPokemonImage(for: pokemonData.sprites.frontDefault!)
                     }
                     
                     // 타입1 처리
@@ -126,20 +130,20 @@ extension MainViewController {
 
     // MARK: - 포켓몬 변경 버튼 클릭 시 호출
     @objc func changePokemon() {
-        mainView.pokemonID.text = "도감번호: "
-        mainView.pokemonName.text = "불러오는 중..."
-        mainView.pokemonImageView.image = nil
+        quizView.pokemonID.text = "도감번호: "
+        quizView.pokemonName.text = "불러오는 중..."
+        quizView.pokemonImageView.image = nil
         // 정답 내용 초기화
         type1Answer = nil
         type2Answer = nil
         userTypeAnswer = []
-        reloadValues(collectionView: mainView.typeCollectionView)
+        reloadValues(collectionView: quizView.typeCollectionView)
         loadRandomPokemon(id: randomIDGenerator())
     }
 }
 
 // MARK: - CSV 데이터 처리 관련 메서드
-extension MainViewController {
+extension QuizViewController {
 
     // 번역된 포켓몬 이름 CSV 데이터를 불러오는 메서드
     private func loadPokemonNameCSV() {
@@ -183,7 +187,7 @@ extension MainViewController {
 }
 
 // MARK: - 정답 제출 로직 관련 메서드
-extension MainViewController {
+extension QuizViewController {
 
     // 정답 제출 버튼 클릭 시 호출
     @objc private func submitAnswer() {
@@ -262,7 +266,7 @@ extension MainViewController {
 }
 
 // MARK: - UICollectionViewDataSource 델리게이트 구현
-extension MainViewController: UICollectionViewDataSource {
+extension QuizViewController: UICollectionViewDataSource {
 
     // 컬렉션 뷰 아이템 개수 설정
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -319,7 +323,7 @@ extension MainViewController: UICollectionViewDataSource {
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout 델리게이트 구현
-extension MainViewController: UICollectionViewDelegateFlowLayout {
+extension QuizViewController: UICollectionViewDelegateFlowLayout {
     // 기준 행 또는 열 사이에 들어가는 아이템 사이의 간격
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         6
@@ -327,5 +331,23 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
     // 컬렉션 뷰의 사이즈
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 60, height: 80)
+    }
+}
+
+// MARK: - Preview canvas 세팅
+import SwiftUI
+
+struct QuizViewControllerRepresentable: UIViewControllerRepresentable {
+    typealias UIViewControllerType = QuizViewController
+    func makeUIViewController(context: Context) -> QuizViewController {
+        return QuizViewController()
+    }
+    func updateUIViewController(_ uiViewController: QuizViewController, context: Context) {
+    }
+}
+@available(iOS 13.0.0, *)
+struct MainViewPreview: PreviewProvider {
+    static var previews: some View {
+        QuizViewControllerRepresentable()
     }
 }

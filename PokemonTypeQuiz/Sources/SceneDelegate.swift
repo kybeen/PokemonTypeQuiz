@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
         window = UIWindow(windowScene: windowScene)
-        let mainViewController = MainViewController()
+        let mainViewController = QuizViewController()
 
         self.window?.rootViewController = mainViewController
         self.window?.makeKeyAndVisible()

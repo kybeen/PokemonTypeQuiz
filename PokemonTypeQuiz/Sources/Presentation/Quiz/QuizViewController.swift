@@ -37,14 +37,7 @@ class QuizViewController: UIViewController {
         // 번역된 포켓몬 이름 CSV 데이터 불러오기
         loadPokemonNameCSV()
         // 1~151 중 랜덤한 도감번호의 포켓몬 불러오기
-        loadRandomPokemon(id: randomIDGenerator())
-    }
-
-    // MARK: - 도감 번호 랜덤 추출
-    private func randomIDGenerator() -> Int {
-        // 1~151 번 중에서 랜덤
-        let randomNumber = Int.random(in: 0...151)
-        return randomNumber
+        loadRandomPokemon(id: Int.randomID)
     }
     
     deinit {
@@ -138,7 +131,7 @@ extension QuizViewController {
         type2Answer = nil
         userTypeAnswer = []
         reloadValues(collectionView: quizView.typeCollectionView)
-        loadRandomPokemon(id: randomIDGenerator())
+        loadRandomPokemon(id: Int.randomID)
     }
 }
 

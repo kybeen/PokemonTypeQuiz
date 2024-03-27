@@ -7,7 +7,9 @@
 
 import Foundation
 
-// MARK: - 응답으로 받을 객체
+// MARK: - Data Transfer Object (DTO)
+/// 👉 REST API 응답 객체
+
 /**
  id: 도감번호
  name: 이름

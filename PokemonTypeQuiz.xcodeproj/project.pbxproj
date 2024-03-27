@@ -126,6 +126,14 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		B82155CD2BB4138C0062111D /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+				B8726B0D2AFCB2AB0084B49C /* Pokemon.swift */,
+			);
+			path = Entity;
+			sourceTree = "<group>";
+		};
 		B8726AEA2AFCAFCB0084B49C = {
 			isa = PBXGroup;
 			children = (
@@ -154,7 +162,7 @@
 		B8726B0C2AFCB29E0084B49C /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				B8726B0D2AFCB2AB0084B49C /* Pokemon.swift */,
+				B82155CD2BB4138C0062111D /* Entity */,
 			);
 			path = Data;
 			sourceTree = "<group>";

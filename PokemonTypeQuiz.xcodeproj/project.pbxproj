@@ -10,6 +10,7 @@
 		B82155BE2BB411BD0062111D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B82155BD2BB411BD0062111D /* RxCocoa */; };
 		B82155C02BB411BD0062111D /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = B82155BF2BB411BD0062111D /* RxRelay */; };
 		B82155C22BB411BD0062111D /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B82155C12BB411BD0062111D /* RxSwift */; };
+		B82155C72BB4128C0062111D /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82155C62BB4128C0062111D /* String+Extension.swift */; };
 		B8726AF72AFCAFCB0084B49C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8726AF62AFCAFCB0084B49C /* AppDelegate.swift */; };
 		B8726AF92AFCAFCB0084B49C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8726AF82AFCAFCB0084B49C /* SceneDelegate.swift */; };
 		B8726AFB2AFCAFCB0084B49C /* QuizViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8726AFA2AFCAFCB0084B49C /* QuizViewController.swift */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B82155C62BB4128C0062111D /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		B8726AF32AFCAFCB0084B49C /* PokemonTypeQuiz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokemonTypeQuiz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8726AF62AFCAFCB0084B49C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B8726AF82AFCAFCB0084B49C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 			children = (
 				B8726AF62AFCAFCB0084B49C /* AppDelegate.swift */,
 				B8726AF82AFCAFCB0084B49C /* SceneDelegate.swift */,
+				B82155C52BB412780062111D /* Utils */,
 				B82155B52BB406220062111D /* Presentation */,
 				B82155B42BB4061D0062111D /* Domain */,
 				B8726B0C2AFCB29E0084B49C /* Data */,
@@ -102,6 +105,14 @@
 				B8726B132AFCC1F80084B49C /* QuizView.swift */,
 			);
 			path = Quiz;
+			sourceTree = "<group>";
+		};
+		B82155C52BB412780062111D /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				B82155C62BB4128C0062111D /* String+Extension.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		B8726AEA2AFCAFCB0084B49C = {
@@ -218,6 +229,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B8726B0E2AFCB2AB0084B49C /* Pokemon.swift in Sources */,
+				B82155C72BB4128C0062111D /* String+Extension.swift in Sources */,
 				B8726B142AFCC1F80084B49C /* QuizView.swift in Sources */,
 				B8726AFB2AFCAFCB0084B49C /* QuizViewController.swift in Sources */,
 				B8726B192AFCCAEE0084B49C /* TypeCollectionViewCell.swift in Sources */,

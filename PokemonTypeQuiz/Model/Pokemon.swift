@@ -8,11 +8,17 @@
 import Foundation
 
 // MARK: - 응답으로 받을 객체
+/**
+ id: 도감번호
+ name: 이름
+ sprites: 종류 별 이미지 URL이 들어 있는 객체
+ types: 포켓몬 타입 정보가 들어 있는 객체의 배열
+ */
 struct PokemonData: Codable {
-    let id: Int // 도감번호
-    let name: String // 이름
-    let sprites: Sprites // 종류 별 이미지 URL이 들어 있는 객체
-    let types: [TypeElement?] // 포켓몬 타입 정보가 들어 있는 객체의 배열
+    let id: Int
+    let name: String
+    let sprites: Sprites
+    let types: [TypeElement?]
 }
 
 // 이미지 URL이 들어 있는 객체를 받기 위한 타입

@@ -1,5 +1,5 @@
 //
-//  Pokemon.swift
+//  PokemonDTO.swift
 //  PokemonTypeQuiz
 //
 //  Created by 김영빈 on 2023/11/09.
@@ -16,7 +16,7 @@ import Foundation
  sprites: 종류 별 이미지 URL이 들어 있는 객체
  types: 포켓몬 타입 정보가 들어 있는 객체의 배열
  */
-struct PokemonData: Codable {
+struct PokemonDTO: Codable {
     let id: Int
     let name: String
     let sprites: Sprites

@@ -72,31 +72,31 @@ extension QuizViewController {
                 return
             }
 
-            // 응답으로 받은 객체를 PokemonData 타입으로 디코딩해서 처리
+            // 응답으로 받은 객체를 PokemonDTO 타입으로 디코딩해서 처리
             do {
-                let pokemonData = try JSONDecoder().decode(PokemonData.self, from: data)
+                let pokemonDTO = try JSONDecoder().decode(PokemonDTO.self, from: data)
                 DispatchQueue.main.async {
 
                     // 도감 번호 처리
-                    self.quizView.pokemonID.text = "도감번호: \(pokemonData.id)"
+                    self.quizView.pokemonID.text = "도감번호: \(pokemonDTO.id)"
 
                     // 이름 처리
                     // TODO: - 마임맨(mr-mime) 👉 예외처리 필요 (-가 있어서 딕셔너리 키값으로 검색이 안됨)
-                    let koreanName = self.pokemonNameDictionary[pokemonData.name.capitalized] // 한글 이름 매핑
+                    let koreanName = self.pokemonNameDictionary[pokemonDTO.name.capitalized] // 한글 이름 매핑
                     self.quizView.pokemonName.text = koreanName
 
                     // 이미지 처리
                     Task {
-                        self.quizView.pokemonImageView.image = try await self.fetchPokemonImage(for: pokemonData.sprites.frontDefault!)
+                        self.quizView.pokemonImageView.image = try await self.fetchPokemonImage(for: pokemonDTO.sprites.frontDefault!)
                     }
                     
                     // 타입1 처리
-                    if let type1 = pokemonData.types[0] {
+                    if let type1 = pokemonDTO.types[0] {
                         self.type1Answer = PokemonType(rawValue: type1.type.name)
                     }
                     // 타입2 처리
-                    if pokemonData.types.count > 1 {
-                        if let type2 = pokemonData.types[1] {
+                    if pokemonDTO.types.count > 1 {
+                        if let type2 = pokemonDTO.types[1] {
                             self.type2Answer = PokemonType(rawValue: type2.type.name)
                         }
                     }

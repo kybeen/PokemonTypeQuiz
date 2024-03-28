@@ -30,7 +30,7 @@ struct Sprites: Codable {
     let backFemale: String?
     let backShiny: String?
     let backShinyFemale: String?
-    let frontDefault: String? // MARK: - 기본 앞모습 (사용할 데이터)
+    let frontDefault: String? // 기본 앞모습 (사용할 데이터✅)
     let frontFemale: String?
     let frontShiny: String?
     let frontShinyFemale: String?
@@ -55,7 +55,7 @@ struct TypeElement: Codable {
 }
 // 타입 정보
 struct TypeInfo: Codable {
-    let name: String // MARK: - 타입명 (사용할 데이터)
+    let name: String // 타입명 (사용할 데이터✅)
     let url: String // 타입에 해당하는 URI
 }
 

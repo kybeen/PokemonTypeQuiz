@@ -64,26 +64,20 @@ class QuizViewController: UIViewController, BaseViewController {
     }
 }
 
-// MARK: - 네트워크 통신 관련
+// MARK: - 이벤트 발생 시 처리
+
 extension QuizViewController {
 
-    // MARK: - 포켓몬 변경 버튼 클릭 시 호출
+    // 포켓몬 변경 버튼 클릭 시 호출
     @objc func changePokemon() {
         quizView.pokemonID.text = "도감번호: -"
         quizView.pokemonName.text = "불러오는 중..."
         quizView.pokemonImageView.image = UIImage(systemName: "questionmark")
-//        // 정답 내용 초기화
-//        type1Answer = nil
-//        type2Answer = nil
         quizViewModel.userTypeAnswer = []
         reloadValues(collectionView: quizView.typeCollectionView)
         quizViewModel.loadRandomPokemon()
     }
-}
-
-// MARK: - 정답 제출 로직 관련 메서드
-extension QuizViewController {
-
+    
     // 정답 제출 버튼 클릭 시 호출
     @objc private func submitAnswer() {
         switch quizViewModel.checkAnswer() {
@@ -96,7 +90,7 @@ extension QuizViewController {
         }
     }
 
-    // 선택한 타입이 없을 때
+    // 선택한 타입이 없을 때 알럿
     private func noValueAlert() {
         let alert = UIAlertController(title: "타입 선택하지 않음", message: "1개 혹은 2개의 타입을 선택해주세요", preferredStyle: .alert)
         let ok = UIAlertAction(title: "확인", style: .cancel)
@@ -104,7 +98,7 @@ extension QuizViewController {
         present(alert, animated: true)
     }
 
-    // 정답일 때
+    // 정답일 때 알럿
     private func correctAlert(type1: PokemonType, type2: PokemonType?) {
         var alert: UIAlertController
         if let type2 = type2 { // 타입이 2개일 때
@@ -122,7 +116,7 @@ extension QuizViewController {
         changePokemon()
     }
 
-    // 틀렸을 때
+    // 틀렸을 때 알럿
     private func failAlert() {
         let alert = UIAlertController(title: "틀렸습니다...", message: "", preferredStyle: .alert)
         let ok = UIAlertAction(title: "확인", style: .cancel)

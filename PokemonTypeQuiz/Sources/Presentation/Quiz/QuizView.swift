@@ -30,7 +30,7 @@ final class QuizView: UIView {
     // 이미지
     let pokemonImageView: UIImageView = {
         let pokemonImageView = UIImageView()
-        pokemonImageView.contentMode = .scaleAspectFill
+        pokemonImageView.contentMode = .scaleAspectFit
         return pokemonImageView
     }()
 

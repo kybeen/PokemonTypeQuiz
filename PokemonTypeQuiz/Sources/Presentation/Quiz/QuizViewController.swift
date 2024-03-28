@@ -11,28 +11,18 @@ import RxCocoa
 import RxSwift
 import SnapKit
 
-class QuizViewController: UIViewController {
+class QuizViewController: UIViewController, BaseViewController {
 
     private let quizView = QuizView()
+    // TODO: - 의존성 주입 방식으로 수정하기
     private let quizViewModel = QuizViewModel()
+    
     let disposeBag = DisposeBag()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(quizView)
-        quizView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-        quizView.typeCollectionView.register(
-            TypeCollectionViewCell.self,
-            forCellWithReuseIdentifier: TypeCollectionViewCell.cellIdentifier
-        )
-        quizView.typeCollectionView.delegate = self
-        quizView.typeCollectionView.dataSource = self
+        setupView()
         
-        quizView.changeButton.addTarget(self, action: #selector(changePokemon), for: .touchUpInside)
-        quizView.submitButton.addTarget(self, action: #selector(submitAnswer), for: .touchUpInside)
-
         quizViewModel.pokemonInfoObservable
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] pokemonInfo in
@@ -53,6 +43,22 @@ class QuizViewController: UIViewController {
         quizViewModel.loadRandomPokemon()
     }
     
+    func setupView() {
+        view.addSubview(quizView)
+        quizView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        quizView.typeCollectionView.register(
+            TypeCollectionViewCell.self,
+            forCellWithReuseIdentifier: TypeCollectionViewCell.cellIdentifier
+        )
+        quizView.typeCollectionView.delegate = self
+        quizView.typeCollectionView.dataSource = self
+        
+        quizView.changeButton.addTarget(self, action: #selector(changePokemon), for: .touchUpInside)
+        quizView.submitButton.addTarget(self, action: #selector(submitAnswer), for: .touchUpInside)
+    }
+    
     deinit {
         print("QuizViewController deinitialized 🚮")
     }
@@ -63,7 +69,7 @@ extension QuizViewController {
 
     // MARK: - 포켓몬 변경 버튼 클릭 시 호출
     @objc func changePokemon() {
-        quizView.pokemonID.text = "도감번호: "
+        quizView.pokemonID.text = "도감번호: -"
         quizView.pokemonName.text = "불러오는 중..."
         quizView.pokemonImageView.image = UIImage(systemName: "questionmark")
 //        // 정답 내용 초기화
@@ -126,6 +132,7 @@ extension QuizViewController {
 }
 
 // MARK: - UICollectionViewDataSource 델리게이트 구현
+
 extension QuizViewController: UICollectionViewDataSource {
 
     // 컬렉션 뷰 아이템 개수 설정
@@ -183,6 +190,7 @@ extension QuizViewController: UICollectionViewDataSource {
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout 델리게이트 구현
+
 extension QuizViewController: UICollectionViewDelegateFlowLayout {
     // 기준 행 또는 열 사이에 들어가는 아이템 사이의 간격
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -195,6 +203,7 @@ extension QuizViewController: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: - Preview canvas 세팅
+
 import SwiftUI
 
 struct QuizViewControllerRepresentable: UIViewControllerRepresentable {

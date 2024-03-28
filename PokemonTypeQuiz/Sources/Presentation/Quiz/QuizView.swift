@@ -12,7 +12,7 @@ final class QuizView: UIView {
     // 도감번호
     let pokemonID: UILabel = {
         let pokemonID = UILabel()
-        pokemonID.text = "도감번호: ??"
+        pokemonID.text = "도감번호: -"
         pokemonID.textAlignment = .center
         pokemonID.textColor = .black
         return pokemonID

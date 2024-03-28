@@ -7,8 +7,8 @@
 
 struct PokemonInfo {
     var id: Int
-    var name: String
-    var imageURL: String
+    var koName: String
+    var imageURL: String?
     var type1: PokemonType?
     var type2: PokemonType?
 }

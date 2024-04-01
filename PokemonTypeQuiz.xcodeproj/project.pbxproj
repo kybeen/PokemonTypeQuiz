@@ -89,6 +89,8 @@
 		B82155B42BB4061D0062111D /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				B82155EA2BB594280062111D /* Interface */,
+				B82155E92BB593EC0062111D /* UseCase */,
 				B82155CA2BB413260062111D /* Model */,
 			);
 			path = Domain;
@@ -164,6 +166,27 @@
 			path = Base;
 			sourceTree = "<group>";
 		};
+		B82155E92BB593EC0062111D /* UseCase */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UseCase;
+			sourceTree = "<group>";
+		};
+		B82155EA2BB594280062111D /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Interface;
+			sourceTree = "<group>";
+		};
+		B82155EB2BB594350062111D /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
 		B8726AEA2AFCAFCB0084B49C = {
 			isa = PBXGroup;
 			children = (
@@ -192,6 +215,7 @@
 		B8726B0C2AFCB29E0084B49C /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				B82155EB2BB594350062111D /* Repository */,
 				B82155D92BB463A40062111D /* Network */,
 				B82155CD2BB4138C0062111D /* Entity */,
 			);

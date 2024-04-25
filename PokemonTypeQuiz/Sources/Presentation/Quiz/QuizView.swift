@@ -7,6 +7,8 @@
 
 import UIKit
 
+import SnapKit
+
 final class QuizView: UIView {
 
     // 도감번호
@@ -34,8 +36,8 @@ final class QuizView: UIView {
         return pokemonImageView
     }()
 
-    // 포켓몬 변경 버튼
-    let changeButton: UIButton = {
+    // 포켓몬 새로 불러오기 버튼
+    let reloadButton: UIButton = {
         let reloadButton = UIButton()
         // SF Symbol 설정
         let symbolFont = UIFont.boldSystemFont(ofSize: 20)
@@ -70,12 +72,12 @@ final class QuizView: UIView {
         return submitButton
     }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init() {
+        super.init(frame: .zero)
         self.backgroundColor = .white
         setupUI()
     }
-
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
@@ -115,8 +117,8 @@ final class QuizView: UIView {
             make.height.equalTo(60)
         }
 
-        addSubview(changeButton)
-        changeButton.snp.makeConstraints { make in
+        addSubview(reloadButton)
+        reloadButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(30)
             make.centerY.equalTo(pokemonImageView)
         }

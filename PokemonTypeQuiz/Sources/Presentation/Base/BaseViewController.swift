@@ -7,5 +7,5 @@
 
 protocol BaseViewController {
     func setupView()
-//    func bind()
+    func bind()
 }

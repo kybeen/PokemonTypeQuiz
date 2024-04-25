@@ -95,7 +95,7 @@
 			children = (
 				B82155EA2BB594280062111D /* Interface */,
 				B82155E92BB593EC0062111D /* UseCase */,
-				B82155CA2BB413260062111D /* Model */,
+				B82155CA2BB413260062111D /* Entity */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -137,21 +137,21 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		B82155CA2BB413260062111D /* Model */ = {
+		B82155CA2BB413260062111D /* Entity */ = {
 			isa = PBXGroup;
 			children = (
 				B82155CB2BB413310062111D /* PokemonType.swift */,
 				B82155DC2BB464080062111D /* PokemonInfo.swift */,
 			);
-			path = Model;
+			path = Entity;
 			sourceTree = "<group>";
 		};
-		B82155CD2BB4138C0062111D /* Entity */ = {
+		B82155CD2BB4138C0062111D /* DTO */ = {
 			isa = PBXGroup;
 			children = (
 				B8726B0D2AFCB2AB0084B49C /* PokemonDTO.swift */,
 			);
-			path = Entity;
+			path = DTO;
 			sourceTree = "<group>";
 		};
 		B82155D92BB463A40062111D /* Network */ = {
@@ -223,7 +223,7 @@
 			children = (
 				B82155EB2BB594350062111D /* Repository */,
 				B82155D92BB463A40062111D /* Network */,
-				B82155CD2BB4138C0062111D /* Entity */,
+				B82155CD2BB4138C0062111D /* DTO */,
 			);
 			path = Data;
 			sourceTree = "<group>";

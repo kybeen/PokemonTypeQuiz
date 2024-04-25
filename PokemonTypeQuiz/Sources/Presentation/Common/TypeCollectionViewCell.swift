@@ -36,6 +36,7 @@ final class TypeCollectionViewCell: UICollectionViewCell {
         setupUI()
 
     }
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }

@@ -6,84 +6,58 @@
 //
 
 import Foundation
-import UIKit
-
-import RxSwift
 
 // 에러 타입
-enum NetworkError: Error {
+enum NetworkRequestError: Error {
     case invalidURL
-    case invalidResponse
+    case requestFail
+    case noData
 }
-enum ImageError: Error {
-    case invalidData
+enum PokemonDTOError: Error {
+    case decodingError
+}
+//enum ImageError: Error {
+//    case invalidImage
+//}
+enum CSVError: Error {
+    case noData
+    case encodingError
 }
 
 final class PokemonAPIService {
     
-    static func fetchPokemonInfo(id: Int, completionHandler: @escaping (Result<Data, Error>) -> Void) {
-        let url = "https://pokeapi.co/api/v2/pokemon/\(id)"
-        URLSession.shared.dataTask(with: URL(string: url)!) { (data, response, error) in
-            if let error = error {
-                completionHandler(.failure(error))
+    static func fetchPokemonData(id: Int, completionHandler: @escaping (Result<Data, NetworkRequestError>) -> Void) {
+        let pokemonURL = "https://pokeapi.co/api/v2/pokemon/\(id)"
+        guard let url = URL(string: pokemonURL) else {
+            completionHandler(.failure(NetworkRequestError.invalidURL))
+            return
+        }
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let _ = error {
+                completionHandler(.failure(NetworkRequestError.requestFail))
             }
             guard let data = data else {
-                let httpResponse = response as! HTTPURLResponse
-                completionHandler(.failure(NSError(domain: "no data", code: httpResponse.statusCode)))
+                completionHandler(.failure(NetworkRequestError.noData))
                 return
             }
             completionHandler(.success(data))
         }.resume()
     }
     
-    static func fetchPokemonImage(url: String, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
-        URLSession.shared.dataTask(with: URL(string: url)!) { (data, response, error) in
-            if let error = error {
-                completionHandler(.failure(error))
+    static func fetchPokemonImageData(imageUrl: String, completionHandler: @escaping (Result<Data, NetworkRequestError>) -> Void) {
+        guard let url = URL(string: imageUrl) else {
+            completionHandler(.failure(NetworkRequestError.invalidURL))
+            return
+        }
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let _ = error {
+                completionHandler(.failure(NetworkRequestError.requestFail))
             }
             guard let data = data else {
-                let httpResponse = response as! HTTPURLResponse
-                completionHandler(.failure(NSError(domain: "no image", code: httpResponse.statusCode)))
+                completionHandler(.failure(NetworkRequestError.noData))
                 return
             }
-            let image = UIImage(data: data)
-            guard let image = image else {
-                completionHandler(.failure(ImageError.invalidData))
-                return
-            }
-            completionHandler(.success(image))
-        }
-    }
-    
-    static func fetchPokemonInfoRx(id: Int) -> Observable<Data> {
-        return Observable.create() { emitter in
-            
-            fetchPokemonInfo(id: id) { result in
-                switch result {
-                case .success(let data):
-                    emitter.onNext(data)
-                    emitter.onCompleted()
-                case .failure(let error):
-                    emitter.onError(error)
-                }
-            }
-            return Disposables.create()
-        }
-    }
-    
-    static func fetchPokemonImageRx(url: String) -> Observable<UIImage> {
-        return Observable.create() { emitter in
-            
-            fetchPokemonImage(url: url) { result in
-                switch result {
-                case .success(let pokemonImage):
-                    emitter.onNext(pokemonImage)
-                    emitter.onCompleted()
-                case .failure(let error):
-                    emitter.onError(error)
-                }
-            }
-            return Disposables.create()
-        }
+            completionHandler(.success(data))
+        }.resume()
     }
 }

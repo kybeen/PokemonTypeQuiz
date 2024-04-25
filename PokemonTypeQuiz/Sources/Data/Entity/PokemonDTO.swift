@@ -58,5 +58,3 @@ struct TypeInfo: Codable {
     let name: String // 타입명 (사용할 데이터✅)
     let url: String // 타입에 해당하는 URI
 }
-
-

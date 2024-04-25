@@ -26,6 +26,7 @@
 		B8726B172AFCC27C0084B49C /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B8726B162AFCC27C0084B49C /* SnapKit */; };
 		B8726B192AFCCAEE0084B49C /* TypeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8726B182AFCCAEE0084B49C /* TypeCollectionViewCell.swift */; };
 		B8726B1B2AFD1CB60084B49C /* pokemonNames.csv in Resources */ = {isa = PBXBuildFile; fileRef = B8726B1A2AFD1CB60084B49C /* pokemonNames.csv */; };
+		B8BA7A902BDAA32900B60B3D /* PokemonRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8BA7A8F2BDAA32900B60B3D /* PokemonRepository.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		B8726B132AFCC1F80084B49C /* QuizView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizView.swift; sourceTree = "<group>"; };
 		B8726B182AFCCAEE0084B49C /* TypeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeCollectionViewCell.swift; sourceTree = "<group>"; };
 		B8726B1A2AFD1CB60084B49C /* pokemonNames.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = pokemonNames.csv; sourceTree = "<group>"; };
+		B8BA7A8F2BDAA32900B60B3D /* PokemonRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonRepository.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,6 +185,7 @@
 		B82155EB2BB594350062111D /* Repository */ = {
 			isa = PBXGroup;
 			children = (
+				B8BA7A8F2BDAA32900B60B3D /* PokemonRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -303,6 +306,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B82155E22BB53A770062111D /* BaseViewController.swift in Sources */,
+				B8BA7A902BDAA32900B60B3D /* PokemonRepository.swift in Sources */,
 				B82155DD2BB464080062111D /* PokemonInfo.swift in Sources */,
 				B82155DB2BB463B50062111D /* PokemonAPIService.swift in Sources */,
 				B8726B0E2AFCB2AB0084B49C /* PokemonDTO.swift in Sources */,

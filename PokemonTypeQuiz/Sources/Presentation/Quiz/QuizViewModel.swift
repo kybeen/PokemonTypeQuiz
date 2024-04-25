@@ -13,8 +13,6 @@ import RxRelay
 
 final class QuizViewModel {
     
-    var pokemonNameDictionary = [String:String]() // 영어:한글 쌍의 포켓몬 이름 딕셔너리
-    
     // 포켓몬 데이터가 변경될 때마다 받아오는 Observable
     lazy var pokemonInfoObservable = BehaviorRelay<PokemonInfo>(value: .init(id: 0, koName: "none"))
     
@@ -23,100 +21,6 @@ final class QuizViewModel {
     var userTypeAnswer = [Int]()
     
     init() {
-        // 번역된 포켓몬 이름 CSV 데이터 불러오기
-        loadPokemonNameCSV()
-    }
-}
-
-// MARK: - 포켓몬 정보 불러오기
-
-extension QuizViewModel {
-    
-    // 1~151 번 사이의 포켓몬을 랜덤으로 불러오는 메서드
-    func loadRandomPokemon() {
-        _ = PokemonAPIService.fetchPokemonInfoRx(id: Int.randomID)
-            .map { [weak self] data in
-                let pokemonDTO = try! JSONDecoder().decode(PokemonDTO.self, from: data)
-                var type1: PokemonType?
-                var type2: PokemonType?
-                // 타입 확인
-                if let type = pokemonDTO.types[0] {
-                    type1 = PokemonType(rawValue: type.type.name)
-                }
-                if pokemonDTO.types.count > 1 {
-                    if let type = pokemonDTO.types[1] {
-                        type2 = PokemonType(rawValue: type.type.name)
-                    }
-                }
-                let pokemonInfo = PokemonInfo(
-                    id: pokemonDTO.id,
-                    koName: self?.pokemonNameDictionary[pokemonDTO.name.capitalized] ?? pokemonDTO.name,
-                    imageURL: pokemonDTO.sprites.frontDefault,
-                    type1: type1,
-                    type2: type2
-                )
-                return pokemonInfo
-            }
-            .take(1)
-            .bind(to: pokemonInfoObservable)
-    }
-    
-    // 포켓몬 이미지를 불러오는 메서드
-    func fetchPokemonImage(for url: String) async throws -> UIImage {
-        let request = URLRequest(url: URL(string: url)!)
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-            throw NetworkError.invalidResponse
-        }
-        let image = UIImage(data: data)
-        guard let image = image else{
-            throw ImageError.invalidData
-        }
-        return image
-    }
-}
-
-// MARK: - CSV 처리
-
-extension QuizViewModel {
-    
-    // 번역된 포켓몬 이름 CSV 데이터를 불러오는 메서드
-    private func loadPokemonNameCSV() {
-        print("loadPokemonNameCSV()...")
-        let path = Bundle.main.path(forResource: "pokemonNames", ofType: "csv")!
-        print(path)
-
-        parseCSV(url: URL(fileURLWithPath: path))
-    }
-    
-    // CSV 파일을 파싱하는 메서드
-    private func parseCSV(url: URL) {
-        print("parseCSV()...")
-        let data = try? Data(contentsOf: url) /// Data(contentsOf:) 는 동기적으로 작동함 👉 메인 스레드를 잡아먹기 때문에 네트워크 통신에서는 사용하지 맙시다
-        guard let data = data else {
-            print("CSV 파일을 불러오지 못함")
-            return
-        }
-        print("CSV 파일을 불러왔습니다!!")
-        if let dataEncoded = String(data: data, encoding: .utf8) {
-            var lines = dataEncoded.components(separatedBy: "\n")
-            lines.removeFirst()
-            
-            var koName = ""
-            var enName = ""
-            for line in lines {
-                let columns = line.components(separatedBy: ",")
-                guard columns.count == 4 else {
-                    break
-                }
-                if columns[1] == "3" {
-                    koName = columns[2]
-                } else if columns[1] == "9" {
-                    enName = columns[2]
-                    pokemonNameDictionary[enName] = koName
-                }
-            }
-        }
     }
 }
 

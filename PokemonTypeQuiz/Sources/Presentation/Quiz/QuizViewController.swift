@@ -7,40 +7,30 @@
 
 import UIKit
 
-import RxCocoa
 import RxSwift
-import SnapKit
 
 class QuizViewController: UIViewController, BaseViewController {
-
-    private let quizView = QuizView()
-    // TODO: - 의존성 주입 방식으로 수정하기
-    private let quizViewModel = QuizViewModel()
     
-    let disposeBag = DisposeBag()
-
+    private let quizView = QuizView()
+    private let quizViewModel: QuizViewModel
+    
+    var disposeBag = DisposeBag()
+    
+    init(_ quizViewModel: QuizViewModel) {
+        self.quizViewModel = quizViewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        
-        quizViewModel.pokemonInfoObservable
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] pokemonInfo in
-                // 도감 번호 처리
-                self?.quizView.pokemonID.text = "도감번호: \(pokemonInfo.id)"
-                // 이름 처리
-                // TODO: - 마임맨(mr-mime) 👉 예외처리 필요 (-가 있어서 딕셔너리 키값으로 검색이 안됨)
-                self?.quizView.pokemonName.text = pokemonInfo.koName
-                // 이미지 처리
-                Task {
-                    if let imageURL = pokemonInfo.imageURL {
-                        self?.quizView.pokemonImageView.image = try await self?.quizViewModel.fetchPokemonImage(for: imageURL)
-                    }
-                }
-            })
-            .disposed(by: disposeBag)
-        
-        quizViewModel.loadRandomPokemon()
+        bind()
+        bindCollectionView()
+        quizViewModel.viewDidLoadEvent.accept(()) // 최초 1회
     }
     
     func setupView() {
@@ -52,44 +42,91 @@ class QuizViewController: UIViewController, BaseViewController {
             TypeCollectionViewCell.self,
             forCellWithReuseIdentifier: TypeCollectionViewCell.cellIdentifier
         )
-        quizView.typeCollectionView.delegate = self
-        quizView.typeCollectionView.dataSource = self
-        
-        quizView.changeButton.addTarget(self, action: #selector(changePokemon), for: .touchUpInside)
-        quizView.submitButton.addTarget(self, action: #selector(submitAnswer), for: .touchUpInside)
     }
     
-    deinit {
-        print("QuizViewController deinitialized 🚮")
+    func bind() {
+        quizViewModel.pokemonID
+            .asDriver(onErrorJustReturn: "도감번호를 불러오지 못했습니다.")
+            .drive(quizView.pokemonID.rx.text)
+            .disposed(by: disposeBag)
+        
+        quizViewModel.pokemonName
+            .asDriver(onErrorJustReturn: "이름을 불러오지 못했습니다.")
+            .drive(quizView.pokemonName.rx.text)
+            .disposed(by: disposeBag)
+        
+        quizViewModel.pokemonImage
+            .asDriver(onErrorJustReturn: nil)
+            .drive(quizView.pokemonImageView.rx.image)
+            .disposed(by: disposeBag)
+        
+        quizView.reloadButton.rx.tap
+            .bind(to: quizViewModel.reloadButtonTap)
+            .disposed(by: disposeBag)
+        
+        quizView.submitButton.rx.tap
+            .bind(to: quizViewModel.submitButtonTap)
+            .disposed(by: disposeBag)
+        
+        quizViewModel.answerStatus
+            .subscribe(onNext: { [weak self] answerStatus in
+                switch answerStatus {
+                case .correct(type1: let type1, type2: let type2):
+                    self?.correctAlert(type1: type1, type2: type2)
+                case .noValue:
+                    self?.noValueAlert()
+                case .fail:
+                    self?.failAlert()
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func bindCollectionView() {
+        //TODO: - 2중 구독 수정하기 ex) userAnswer를 [(PokemonType, isSelected: Bool)] 같은 식으로?
+        // 셀 구성
+        let typesObservable = Observable.of(PokemonType.allCases)
+        typesObservable
+            .bind(to: quizView.typeCollectionView.rx.items(cellIdentifier: TypeCollectionViewCell.cellIdentifier, cellType: TypeCollectionViewCell.self)) { (index, color, cell) in
+                cell.typeImageView.image = UIImage(named: PokemonType.allCases[index].rawValue)
+                cell.typeNameLabel.text = PokemonType.allCases[index].koType
+                
+                self.quizViewModel.userAnswer
+                    .map { $0.contains(index) }
+                    .subscribe(onNext: { isSelected in
+                        if isSelected {
+                            cell.layer.borderWidth = 3
+                            cell.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
+                            cell.backgroundColor = .gray.withAlphaComponent(0.5)
+                            cell.typeNameLabel.font = UIFont.boldSystemFont(ofSize: 18)
+                        } else {
+                            cell.layer.borderWidth = 1
+                            cell.layer.borderColor = UIColor.black.cgColor
+                            cell.backgroundColor = .clear
+                            cell.typeNameLabel.font = UIFont.boldSystemFont(ofSize: 16)
+                        }
+                    })
+                    .disposed(by: self.disposeBag)
+            }
+            .disposed(by: disposeBag)
+        
+        
+        // 셀 선택 시 동작
+        quizView.typeCollectionView.rx.itemSelected
+            .subscribe(onNext: { [weak self] indexPath in
+                print("누른 자리: \(indexPath.row)")
+                // 선택되어있는 값이면 userTypeAnswer에서 제거
+                self?.quizViewModel.typeCellTap.accept((indexPath.row))
+            })
+            .disposed(by: disposeBag)
+        
+        quizView.typeCollectionView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
     }
 }
 
-// MARK: - 이벤트 발생 시 처리
-
 extension QuizViewController {
-
-    // 포켓몬 변경 버튼 클릭 시 호출
-    @objc func changePokemon() {
-        quizView.pokemonID.text = "도감번호: -"
-        quizView.pokemonName.text = "불러오는 중..."
-        quizView.pokemonImageView.image = UIImage(systemName: "questionmark")
-        quizViewModel.userTypeAnswer = []
-        reloadValues(collectionView: quizView.typeCollectionView)
-        quizViewModel.loadRandomPokemon()
-    }
     
-    // 정답 제출 버튼 클릭 시 호출
-    @objc private func submitAnswer() {
-        switch quizViewModel.checkAnswer() {
-        case .correct(type1: let type1, type2: let type2):
-            correctAlert(type1: type1, type2: type2)
-        case .noValue:
-            noValueAlert()
-        case .fail:
-            failAlert()
-        }
-    }
-
     // 선택한 타입이 없을 때 알럿
     private func noValueAlert() {
         let alert = UIAlertController(title: "타입 선택하지 않음", message: "1개 혹은 2개의 타입을 선택해주세요", preferredStyle: .alert)
@@ -113,7 +150,7 @@ extension QuizViewController {
         alert.addAction(ok)
         present(alert, animated: true)
         // 포켓몬 변경
-        changePokemon()
+        quizViewModel.reloadButtonTap.accept(())
     }
 
     // 틀렸을 때 알럿
@@ -122,64 +159,6 @@ extension QuizViewController {
         let ok = UIAlertAction(title: "확인", style: .cancel)
         alert.addAction(ok)
         present(alert, animated: true)
-    }
-}
-
-// MARK: - UICollectionViewDataSource 델리게이트 구현
-
-extension QuizViewController: UICollectionViewDataSource {
-
-    // 컬렉션 뷰 아이템 개수 설정
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return PokemonType.allCases.count
-    }
-    
-    // 컬렉션 뷰 구성
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TypeCollectionViewCell.cellIdentifier, for: indexPath) as? TypeCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        cell.typeImageView.image = UIImage(named: PokemonType.allCases[indexPath.row].rawValue)
-        cell.typeNameLabel.text = PokemonType.allCases[indexPath.row].koType
-        return cell
-    }
-    
-    // 셀 선택 시 동작
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("누른 자리: \(indexPath.row)")
-        // 선택되어있는 값이면 userTypeAnswer에서 제거
-        if let index = quizViewModel.userTypeAnswer.firstIndex(of: indexPath.row) {
-            quizViewModel.userTypeAnswer.remove(at: index)
-            print("선택 해제됨!! \(quizViewModel.userTypeAnswer)")
-        } else {
-            // 선택되어 있지 않은 값이고, userTypeAnswer의 값이 2개 미만일 때 userTypeAnswer에 추가
-            if quizViewModel.userTypeAnswer.count < 2 {
-                quizViewModel.userTypeAnswer.append(indexPath.row)
-                print("선택됨!! \(quizViewModel.userTypeAnswer)")
-            }
-        }
-        reloadValues(collectionView: collectionView)
-    }
-    
-    // 셀 선택 처리 메서드
-    func reloadValues(collectionView: UICollectionView) {
-        // 0~17까지 인덱스 중 userTypeAnswer에 있는 값이면 셀에 선택 효과 적용
-        for idx in 0..<18 {
-            guard let cell = collectionView.cellForItem(at: IndexPath(row: idx, section: 0)) as? TypeCollectionViewCell else {
-                return
-            }
-            if quizViewModel.userTypeAnswer.contains(idx) {
-                cell.layer.borderWidth = 3
-                cell.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
-                cell.backgroundColor = .gray.withAlphaComponent(0.5)
-                cell.typeNameLabel.font = UIFont.boldSystemFont(ofSize: 18)
-            } else {
-                cell.layer.borderWidth = 1
-                cell.layer.borderColor = UIColor.black.cgColor
-                cell.backgroundColor = .clear
-                cell.typeNameLabel.font = UIFont.systemFont(ofSize: 16)
-            }
-        }
     }
 }
 
@@ -196,21 +175,6 @@ extension QuizViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-// MARK: - Preview canvas 세팅
-
-import SwiftUI
-
-struct QuizViewControllerRepresentable: UIViewControllerRepresentable {
-    typealias UIViewControllerType = QuizViewController
-    func makeUIViewController(context: Context) -> QuizViewController {
-        return QuizViewController()
-    }
-    func updateUIViewController(_ uiViewController: QuizViewController, context: Context) {
-    }
-}
-@available(iOS 13.0.0, *)
-struct MainViewPreview: PreviewProvider {
-    static var previews: some View {
-        QuizViewControllerRepresentable()
-    }
+#Preview {
+    QuizViewController(QuizViewModel(RandomPokemonUseCase(PokemonRepository()), AnswerUseCase()))
 }

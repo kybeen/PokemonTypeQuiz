@@ -30,6 +30,7 @@
 		B8BA7A922BDAA43500B60B3D /* PokemonRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8BA7A912BDAA43500B60B3D /* PokemonRepositoryProtocol.swift */; };
 		B8BA7A942BDAA51400B60B3D /* AnswerStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8BA7A932BDAA51400B60B3D /* AnswerStatus.swift */; };
 		B8BA7A962BDAA63000B60B3D /* AnswerUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8BA7A952BDAA63000B60B3D /* AnswerUseCase.swift */; };
+		B8BA7A982BDAA68500B60B3D /* RandomPokemonUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8BA7A972BDAA68500B60B3D /* RandomPokemonUseCase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		B8BA7A912BDAA43500B60B3D /* PokemonRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonRepositoryProtocol.swift; sourceTree = "<group>"; };
 		B8BA7A932BDAA51400B60B3D /* AnswerStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerStatus.swift; sourceTree = "<group>"; };
 		B8BA7A952BDAA63000B60B3D /* AnswerUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerUseCase.swift; sourceTree = "<group>"; };
+		B8BA7A972BDAA68500B60B3D /* RandomPokemonUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomPokemonUseCase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				B8BA7A952BDAA63000B60B3D /* AnswerUseCase.swift */,
+				B8BA7A972BDAA68500B60B3D /* RandomPokemonUseCase.swift */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
@@ -316,6 +319,7 @@
 			files = (
 				B8BA7A922BDAA43500B60B3D /* PokemonRepositoryProtocol.swift in Sources */,
 				B82155E22BB53A770062111D /* BaseViewController.swift in Sources */,
+				B8BA7A982BDAA68500B60B3D /* RandomPokemonUseCase.swift in Sources */,
 				B8BA7A902BDAA32900B60B3D /* PokemonRepository.swift in Sources */,
 				B82155DD2BB464080062111D /* PokemonInfo.swift in Sources */,
 				B82155DB2BB463B50062111D /* PokemonAPIService.swift in Sources */,

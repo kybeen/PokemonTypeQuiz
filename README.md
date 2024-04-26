@@ -2,7 +2,7 @@
 포켓몬 API를 활용한 포켓몬 타입 퀴즈
 
 ### ✈️ 테스트플라이트
-<img width="300" alt="image" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/63093d51-b7af-441d-bde0-39412a3f8e04">
+<img width="200" alt="image" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/63093d51-b7af-441d-bde0-39412a3f8e04">
 
 
 

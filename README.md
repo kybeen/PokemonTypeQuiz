@@ -1,12 +1,15 @@
 # PokemonTypeQuiz
 포켓몬 API를 활용한 포켓몬 타입 퀴즈
 
-### ✈️ 테스트플라이트
+## ✈️ 테스트플라이트
 <img width="200" alt="image" src="https://github.com/kybeen/PokemonTypeQuiz/assets/89764127/63093d51-b7af-441d-bde0-39412a3f8e04">
 
+## 🛠️ 사용 기술
+- UIKit, SnapKit
+- RxSwift
+- Clean Architecture
 
-
-### 💡 활용 API
+## 💡 활용 API
 - 포켓몬 API 👉 https://pokeapi.co
 - Docs 👉 https://pokeapi.co/docs/v2#items-section
 
@@ -18,8 +21,9 @@
 
 
 ### ⚙️ 동작 방식
-1. 랜덤으로 관동지방(도감번호 1~151)의 포켓몬 중 한마리의 이름과 이미지를 불러온다.
-2. 타입을 선택하고 정답을 제출
+1. 랜덤으로 관동지방(도감번호 1~151)의 포켓몬 중 한마리의 이름과 이미지를 불러옵니다.
+2. 불러온 포켓몬의 타입을 선택(1개 or 2개)하고 정답을 제출합니다.
+3. 정답 여부에 따른 알럿이 나타납니다. (정답일 경우 새로운 포켓몬을 불러옵니다.)
 
 
 
